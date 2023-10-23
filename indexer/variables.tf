@@ -38,14 +38,14 @@ variable "indexers" {
 
 variable "environment" {
   type        = string
-  description = "Name of the environment {dev | dev2 | dev3 | dev4 | dev5 | staging | testnet | public-testnet | testnet1 | testnet2}."
+  description = "Name of the environment {dev | dev2 | dev3 | dev4 | dev5 | staging | testnet | public-testnet | testnet1 | testnet2 | mainnet}."
 
   validation {
     condition = contains(
-      ["dev", "dev2", "dev3", "dev4", "dev5", "staging", "testnet", "public-testnet", "testnet1", "testnet2"],
+      ["dev", "dev2", "dev3", "dev4", "dev5", "staging", "testnet", "public-testnet", "testnet1", "testnet2", "mainnet"],
       var.environment
     )
-    error_message = "Err: invalid environment. Must be one of {dev | dev2 | dev3 | dev4 | dev5 | staging | testnet | public-testnet | testnet1 | testnet2}."
+    error_message = "Err: invalid environment. Must be one of {dev | dev2 | dev3 | dev4 | dev5 | staging | testnet | public-testnet | testnet1 | testnet2 | mainnet}."
   }
 }
 
@@ -71,10 +71,10 @@ variable "bugsnag_release_stage" {
 
   validation {
     condition = contains(
-      ["development", "staging", "testnet"],
+      ["development", "staging", "testnet", "mainnet"],
       var.bugsnag_release_stage
     )
-    error_message = "Err: invalid bugsnag release stage. Must be one of {development | staging | testnet}."
+    error_message = "Err: invalid bugsnag release stage. Must be one of {development | staging | testnet | mainnet}."
   }
 }
 
