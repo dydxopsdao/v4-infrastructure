@@ -427,3 +427,9 @@ variable "vulcan_ecs_environment_variables" {
   description = "Environment variables to set for the Indexer Vulcan ECS task, in addition to the default values."
   default     = []
 }
+
+variable "services_disable_dd_log" {
+  type = list(string)
+  description = "List of services will disable the log forwarder subscription to datadog"
+  default     = []
+}
