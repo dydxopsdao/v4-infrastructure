@@ -1,0 +1,47 @@
+# Message Signer
+
+An AWS Lambda function that signs the input message with an asymmetric key.
+
+## Assumptions
+
+* AWS account
+* Terraform Cloud
+* Terraform CLI installed locally
+
+## Usage
+
+Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
+The user should have the permissions to:
+
+* Create IAM roles,
+* Create Lambda functions.
+
+Set up the Terraform project:
+
+```
+cd ./message_signer
+terraform login
+terraform init
+terraform apply
+```
+
+This will create a dedicated workspace in Terraform Cloud but the AWS deployment will fail (no credentials).
+In the new Terraform Cloud workspace set up the following variables:
+
+* `AWS_ACCESS_KEY_ID` - user your IAM user ID
+* `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key
+* `AWS_REGION` - where you want the Lambda function deployed
+
+Then re-run:
+
+```
+terraform apply
+```
+
+The Lambda function should be deployed.
+
+## Reading
+
+* https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html
+* https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function
+* https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/
