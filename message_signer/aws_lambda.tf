@@ -16,14 +16,30 @@ resource "aws_iam_role" "iam_for_lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+resource "terraform_data" "build_python_package" {
+  triggers_replace = {
+    always = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      rm -rf ./package
+      mkdir -p ./package
+      pip install --target ./package cryptography
+      cp ./sign_message.py ./package
+    EOT
+  }
+}
+
 data "archive_file" "lambda" {
+  depends_on  = [terraform_data.build_python_package]
   type        = "zip"
-  source_file = "sign_message.py"
-  output_path = "sign_message.zip"
+  source_dir  = "package"
+  output_path = "package.zip"
 }
 
 resource "aws_lambda_function" "sign_message" {
-  filename      = "sign_message.zip"
+  filename      = "package.zip"
   function_name = "sign_message"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = "sign_message.run"
