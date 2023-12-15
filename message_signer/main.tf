@@ -26,7 +26,7 @@ resource "terraform_data" "build_python_package" {
       rm -rf ./package
       mkdir -p ./package
       pip install --target ./package cryptography
-      cp ./sign_message.py ./package
+      cp ./message_signer.py ./package
     EOT
   }
 }
@@ -42,7 +42,7 @@ resource "aws_lambda_function" "sign_message" {
   filename      = "package.zip"
   function_name = "sign_message"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "sign_message.run"
+  handler       = "message_signer.run"
 
   source_code_hash = data.archive_file.lambda.output_base64sha256
 

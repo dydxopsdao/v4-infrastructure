@@ -10,6 +10,13 @@ An AWS Lambda function that signs the input message with an asymmetric key.
 
 ## Usage
 
+Prepare the RSA key:
+
+```
+openssl genrsa -out rsa-private.pem 4096
+openssl rsa -in rsa-private.pem -outform PEM -pubout -out rsa-public.pem
+```
+
 Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
 The user should have the permissions to:
 
@@ -45,3 +52,4 @@ The Lambda function should be deployed.
 * https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html
 * https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function
 * https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/
+* https://rietta.com/blog/openssl-generating-rsa-key-from-command/
