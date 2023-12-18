@@ -63,6 +63,24 @@ terraform apply
 
 The Lambda function should be deployed.
 
+## Testing
+
+Prepare environment
+
+```
+python3 -m venv python_venv
+. ./python_venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Run tests
+
+```
+. ./python_venv/bin/activate
+python3 ./run_tests.py
+```
+
 ## Reading
 
 * https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html

@@ -25,7 +25,8 @@ resource "terraform_data" "build_python_package" {
     command = <<EOT
       rm -rf ./package
       mkdir -p ./package
-      pip install --target ./package cryptography
+      pip install --upgrade pip
+      pip install --target ./package -r requirements.txt
       cp ./message_signer.py ./package
     EOT
   }
