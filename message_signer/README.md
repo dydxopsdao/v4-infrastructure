@@ -2,6 +2,22 @@
 
 An AWS Lambda function that signs the input message with an asymmetric key.
 
+The input should be a JSON with the following format:
+
+```
+{
+    "message": "<a message string to be signed>"
+}
+```
+
+The returned value is a JSON with the following format:
+
+```
+{
+    "signature_base64": <base64-encoded RSA signature string>
+}
+```
+
 ## Assumptions
 
 * AWS account

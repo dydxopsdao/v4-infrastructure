@@ -12,24 +12,18 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-def run(event, context=None):
-    message = event["message"]
-    private_key = read_private_key()
-    signature = sign_message(private_key, message)
-    data = {"signed_message_base64": base64.b64encode(signature).decode("ascii")}
+def run(event, context):
+    private_key = read_private_key(context)
+    signature = sign_message(private_key, event["message"])
+    data = {"signature_base64": base64.b64encode(signature).decode("ascii")}
     return json.dumps(data)
 
 
-def read_private_key():
-    # TODO: read from envvar or config file
-    with open(
-        "./rsa-private.pem",  # TODO: move to AWS vault
-        "rb",
-    ) as key_file:
-        private_key = serialization.load_pem_private_key(
-            key_file.read(),
-            password=None,
-        )
+def read_private_key(context):
+    private_key = serialization.load_pem_private_key(
+        context["private_key"],
+        password=None,
+    )
     return private_key
 
 

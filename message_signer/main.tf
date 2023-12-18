@@ -47,4 +47,10 @@ resource "aws_lambda_function" "sign_message" {
   source_code_hash = data.archive_file.lambda.output_base64sha256
 
   runtime = "python3.11"
+
+  environment {
+    variables = {
+      RSA_PRIVATE_KEY = var.rsa_private_key
+    }
+  }
 }
