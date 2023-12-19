@@ -1,5 +1,6 @@
 import base64
 import json
+import os
 
 import cryptography
 from cryptography.hazmat.primitives import serialization
@@ -70,6 +71,7 @@ def smoke_test():
         RSA_PRIVATE_KEY.encode("utf-8"),
         password=None,
     )
+    os.environ['RSA_PRIVATE_KEY'] = RSA_PRIVATE_KEY
 
     result_raw = message_signer.run(
         {"message": message},
