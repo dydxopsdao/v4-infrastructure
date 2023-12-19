@@ -17,7 +17,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 }
 
 resource "aws_ecr_repository" "repository" {
-	  name = "message-signer-repository"
+	  name = "message-signer"
 	
 	  image_scanning_configuration {
 	    scan_on_push = true
@@ -69,7 +69,7 @@ resource "aws_lambda_function" "sign_message" {
 
   source_code_hash = data.archive_file.lambda.output_base64sha256
 
-  runtime = "python3.9"
+  runtime = "python3.12"
 
   environment {
     variables = {
