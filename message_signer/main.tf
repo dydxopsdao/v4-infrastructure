@@ -74,6 +74,7 @@ resource "aws_lambda_function" "sign_message" {
   environment {
     variables = {
       RSA_PRIVATE_KEY = var.rsa_private_key
+      DUMMY = "dummy"
     }
   }
 }
