@@ -25,7 +25,7 @@ openssl genrsa -out rsa-private.pem 4096
 openssl rsa -in rsa-private.pem -outform PEM -pubout -out rsa-public.pem
 ```
 
-Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
+Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account. Call it e.g.: `terraformer`.
 The user should have the permissions to:
 
 * Create IAM roles,
@@ -56,6 +56,27 @@ terraform apply
 
 The Lambda function should be deployed.
 
+Create a separate user with minimal permissions to invoke the function. An example IAM inline policy could look like this:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:ListFunctions",
+                "lambda:GetFunction",
+                "lambda:InvokeFunction"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
+
 ## Testing
 
 Prepare environment
@@ -78,7 +99,7 @@ To manually build the image and upload it to the container registry (assuming it
 
 ```
 REGION=ap-northeast-1
-REPOSITORY=382812410806.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
+REPOSITORY=791066989954.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
 docker build --platform linux/amd64 -t validator-notifier:latest .
 docker tag validator-notifier:latest ${REPOSITORY}:latest
