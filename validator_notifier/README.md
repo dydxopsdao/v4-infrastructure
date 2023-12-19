@@ -1,20 +1,12 @@
-# Message Signer
+# Validator Notifier
 
-An AWS Lambda function that signs the input message with an asymmetric key.
+An AWS Lambda function that signs the input message with an asymmetric key and then sends it via email to a predefined set of recipients.
 
 The input should be a JSON with the following format:
 
 ```
 {
-    "message": "<a message string to be signed>"
-}
-```
-
-The returned value is a JSON with the following format:
-
-```
-{
-    "signature_base64": <base64-encoded RSA signature string>
+    "message": "<a message string to be signed and sent>"
 }
 ```
 
@@ -43,7 +35,7 @@ The user should have the permissions to:
 Set up the Terraform project:
 
 ```
-cd ./message_signer
+cd ./validator_notifier
 terraform login
 terraform init
 terraform apply
@@ -86,10 +78,10 @@ To manually build the image and upload it to the container registry (assuming it
 
 ```
 REGION=ap-northeast-1
-REPOSITORY=382812410806.dkr.ecr.ap-northeast-1.amazonaws.com/message-signer
+REPOSITORY=382812410806.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
-docker build --platform linux/amd64 -t message-signer:latest .
-docker tag message-signer:latest ${REPOSITORY}:latest
+docker build --platform linux/amd64 -t validator-notifier:latest .
+docker tag validator-notifier:latest ${REPOSITORY}:latest
 docker push ${REPOSITORY}:latest
 ```
 
@@ -99,3 +91,8 @@ docker push ${REPOSITORY}:latest
 * https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function
 * https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/
 * https://rietta.com/blog/openssl-generating-rsa-key-from-command/
+
+## TODO
+
+* Use AWS KMS instead of plain env var to store the private key.
+* Build Docker image via Terraform.

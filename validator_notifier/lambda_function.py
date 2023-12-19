@@ -1,16 +1,11 @@
 import base64
 import json
-import logging
 import os
 
 import cryptography
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
-
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
 
 def run(event, context):

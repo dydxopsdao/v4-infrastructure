@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
-import message_signer
+import lambda_function
 
 
 RSA_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
@@ -73,7 +73,7 @@ def smoke_test():
     )
     os.environ['RSA_PRIVATE_KEY'] = RSA_PRIVATE_KEY
 
-    result_raw = message_signer.run(
+    result_raw = lambda_function.run(
         {"message": message},
         {"private_key": RSA_PRIVATE_KEY.encode("utf-8")},
     )

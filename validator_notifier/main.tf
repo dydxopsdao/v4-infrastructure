@@ -1,5 +1,5 @@
-resource "aws_ecr_repository" "message_signer" {
-  name = "message-signer"
+resource "aws_ecr_repository" "validator_notifier" {
+  name = "validator-notifier"
   image_scanning_configuration {
     scan_on_push = true
   }
@@ -61,16 +61,12 @@ resource "aws_iam_role" "iam_for_lambda" {
 #   output_path = "package.zip"
 # }
 
-resource "aws_lambda_function" "sign_message" {
-  function_name = "sign_message"
+resource "aws_lambda_function" "notify_validators" {
+  function_name = "notify_validators"
   package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.message_signer.repository_url}:latest"
+  image_uri     = "${aws_ecr_repository.validator_notifier.repository_url}:latest"
   role          = aws_iam_role.iam_for_lambda.arn
   timeout       = 90
-
-  # handler       = "message_signer.run"
-  # source_code_hash = data.archive_file.lambda.output_base64sha256
-  # runtime = "python3.12"
 
   environment {
     variables = {

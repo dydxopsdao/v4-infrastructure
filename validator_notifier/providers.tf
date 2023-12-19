@@ -3,7 +3,7 @@ terraform {
     organization = "dydxopsdao"
 
     workspaces {
-      name = "message-signer"
+      name = "validator-notifier"
     }
   }
 
