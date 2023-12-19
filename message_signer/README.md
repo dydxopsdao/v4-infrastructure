@@ -37,7 +37,8 @@ Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AW
 The user should have the permissions to:
 
 * Create IAM roles,
-* Create Lambda functions.
+* Create Lambda functions,
+* Create and manage ECR (container registry).
 
 Set up the Terraform project:
 
@@ -79,6 +80,17 @@ Run tests
 ```
 . ./python_venv/bin/activate
 python3 ./run_tests.py
+```
+
+To manually build the image and upload it to the container registry (assuming it has been created):
+
+```
+REGION=ap-northeast-1
+REPOSITORY=382812410806.dkr.ecr.ap-northeast-1.amazonaws.com/message-signer
+aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
+docker build --platform linux/amd64 -t message-signer:latest .
+docker tag message-signer:latest ${REPOSITORY}:latest
+docker push ${REPOSITORY}:latest
 ```
 
 ## Reading
