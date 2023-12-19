@@ -66,6 +66,7 @@ resource "aws_lambda_function" "sign_message" {
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.message_signer.repository_url}:latest"
   role          = aws_iam_role.iam_for_lambda.arn
+  timeout       = 90
 
   # handler       = "message_signer.run"
   # source_code_hash = data.archive_file.lambda.output_base64sha256
@@ -74,7 +75,6 @@ resource "aws_lambda_function" "sign_message" {
   environment {
     variables = {
       RSA_PRIVATE_KEY = var.rsa_private_key
-      DUMMY = "dummy"
     }
   }
 }
