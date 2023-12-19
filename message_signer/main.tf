@@ -16,6 +16,14 @@ resource "aws_iam_role" "iam_for_lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
+resource "aws_ecr_repository" "repository" {
+	  name = "message-signer-repository"
+	
+	  image_scanning_configuration {
+	    scan_on_push = true
+	  }
+}
+
 resource "terraform_data" "build_python_package" {
   triggers_replace = {
     always = timestamp()
@@ -31,6 +39,20 @@ resource "terraform_data" "build_python_package" {
     EOT
   }
 }
+
+# resource "docker_image" "message_signer" {
+#   name = "message-signer"
+#   build {
+#     context = "."
+#     tag     = ["message-signer:lastest"]
+#     # build_arg = {
+#     #   foo : "zoo"
+#     # }
+#     # label = {
+#     #   author : "zoo"
+#     # }
+#   }
+# }
 
 data "archive_file" "lambda" {
   depends_on  = [terraform_data.build_python_package]
