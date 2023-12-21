@@ -71,7 +71,7 @@ def smoke_test():
         RSA_PRIVATE_KEY.encode("utf-8"),
         password=None,
     )
-    os.environ['RSA_PRIVATE_KEY'] = RSA_PRIVATE_KEY
+    os.environ["RSA_PRIVATE_KEY"] = RSA_PRIVATE_KEY
 
     result_raw = lambda_function.run(
         {"message": message},
@@ -84,6 +84,16 @@ def smoke_test():
         signature,
         message,
         private_key.public_key(),
+    )
+
+    print("Message:", message)
+    print("Signature:", result_json["signature_base64"])
+    print(
+        "Public key:",
+        private_key.public_key().public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        ).decode("utf-8"),
     )
 
 
@@ -104,4 +114,4 @@ def _verify_signature(
 
 if __name__ == "__main__":
     smoke_test()
-    print("ok")
+    print("=== tests passed ===")

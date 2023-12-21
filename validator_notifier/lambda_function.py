@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import os
 
 import cryptography
@@ -8,7 +9,12 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+
 def run(event, context):
+    logger.info(f"Invoked with: {event}")
     raw_private_key = os.environ['RSA_PRIVATE_KEY'].encode("utf-8")
     private_key = read_private_key(raw_private_key)
     signature = sign_message(private_key, event["message"])
