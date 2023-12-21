@@ -17,9 +17,11 @@ def run(event, context):
     logger.info(f"Invoked with: {event}")
     raw_private_key = os.environ['RSA_PRIVATE_KEY'].encode("utf-8")
     private_key = read_private_key(raw_private_key)
-    signature = sign_message(private_key, event["message"])
-    data = {"signature_base64": base64.b64encode(signature).decode("ascii")}
-    return json.dumps(data)
+    signature_bytes = sign_message(private_key, event["message"])
+    signature_encoded = base64.b64encode(signature_bytes).decode("ascii")
+    outgoing_message = build_outgoing_message(event["message"], signature_encoded)
+    response = {"signature_base64": signature_encoded}
+    return json.dumps(response)
 
 
 def read_private_key(raw_key: str):
@@ -42,3 +44,8 @@ def sign_message(
         hashes.SHA256(),
     )
     return signature
+
+
+def build_outgoing_message(message: str, signature: str):
+    outgoing_message = f"{message}\n\n----- RSA signature -----\n{signature}"
+    return outgoing_message

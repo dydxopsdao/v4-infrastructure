@@ -115,5 +115,6 @@ docker push ${REPOSITORY}:latest
 
 ## TODO
 
+* Broadcast messages
 * Use AWS KMS instead of plain env var to store the private key.
 * Build Docker image via Terraform.
