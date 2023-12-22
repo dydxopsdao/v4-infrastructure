@@ -18,6 +18,8 @@ The input should be a JSON with the following format:
 
 ## Usage
 
+Set up Amazon SES by following their guide at: https://docs.aws.amazon.com/ses/latest/dg/setting-up.html#quick-start-verify-email-addresses .
+
 Prepare the RSA key:
 
 ```
@@ -86,13 +88,14 @@ python3 -m venv python_venv
 . ./python_venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+pip install pytest
 ```
 
 Run tests
 
 ```
-. ./python_venv/bin/activate
-python3 ./run_tests.py
+# . ./python_venv/bin/activate
+pytest
 ```
 
 To manually build the image and upload it to the container registry (assuming it has been created):
@@ -115,6 +118,5 @@ docker push ${REPOSITORY}:latest
 
 ## TODO
 
-* Broadcast messages
 * Use AWS KMS instead of plain env var to store the private key.
 * Build Docker image via Terraform.

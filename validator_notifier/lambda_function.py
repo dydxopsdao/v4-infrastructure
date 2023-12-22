@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
+from mailing import Mailer
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -15,11 +16,25 @@ logger.setLevel(logging.INFO)
 
 def run(event, context):
     logger.info(f"Invoked with: {event}")
+
     raw_private_key = os.environ['RSA_PRIVATE_KEY'].encode("utf-8")
     private_key = read_private_key(raw_private_key)
+
     signature_bytes = sign_message(private_key, event["message"])
     signature_encoded = base64.b64encode(signature_bytes).decode("ascii")
+
     outgoing_message = build_outgoing_message(event["message"], signature_encoded)
+    email_client = Mailer(
+        sender=os.environ["SENDER"],
+        region=os.environ["EMAIL_AWS_REGION"],
+    )
+    for recipient in os.environ["RECIPIENTS"].split(","):
+        email_client.send(
+            subject="dYdX Chain: action required",
+            message=outgoing_message,
+            recipient=recipient,
+        )
+
     response = {"signature_base64": signature_encoded}
     return json.dumps(response)
 

@@ -62,15 +62,19 @@ resource "aws_iam_role" "iam_for_lambda" {
 # }
 
 resource "aws_lambda_function" "notify_validators" {
-  function_name = "notify_validators"
-  package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.validator_notifier.repository_url}:latest"
-  role          = aws_iam_role.iam_for_lambda.arn
-  timeout       = 90
+  function_name    = "notify_validators"
+  package_type     = "Image"
+  image_uri        = "${aws_ecr_repository.validator_notifier.repository_url}:latest"
+  role             = aws_iam_role.iam_for_lambda.arn
+  timeout          = 90
+  source_code_hash = timestamp()
 
   environment {
     variables = {
-      RSA_PRIVATE_KEY = var.rsa_private_key
+      RSA_PRIVATE_KEY  = var.rsa_private_key
+      EMAIL_AWS_REGION = "ap-northeast-1"
+      SENDER           = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
+      RECIPIENTS       = "piotr+1@dydxopsservices.com,piotr+2@dydxopsservices.com"
     }
   }
 }

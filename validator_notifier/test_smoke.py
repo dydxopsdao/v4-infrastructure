@@ -2,10 +2,12 @@ import base64
 import json
 import os
 
+import boto3
 import cryptography
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
+import pytest
 
 import lambda_function
 
@@ -65,13 +67,16 @@ z6WohhfweRlSiRSWJlsaBzHWvYm+fA==
 """
 
 
-def smoke_test():
+def test_smoke(monkeypatch, private_key):
+    def mocked_boto3_client(*args, **kwargs):
+        return MockedBoto3Client()
+
     message = "lorem"
-    private_key = serialization.load_pem_private_key(
-        RSA_PRIVATE_KEY.encode("utf-8"),
-        password=None,
-    )
     os.environ["RSA_PRIVATE_KEY"] = RSA_PRIVATE_KEY
+    os.environ["EMAIL_AWS_REGION"] = "region"
+    os.environ["SENDER"] = "sender"
+    os.environ["RECIPIENTS"] = "recipient1,recipient2"
+    monkeypatch.setattr(boto3, "client", mocked_boto3_client)
 
     result_raw = lambda_function.run(
         {"message": message},
@@ -80,24 +85,28 @@ def smoke_test():
 
     result_json = json.loads(result_raw)
     signature = base64.b64decode(result_json["signature_base64"])
-    _verify_signature(
+    verify_signature(
         signature,
         message,
         private_key.public_key(),
     )
 
-    print("Message:", message)
-    print("Signature:", result_json["signature_base64"])
-    print(
-        "Public key:",
-        private_key.public_key().public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo,
-        ).decode("utf-8"),
+
+@pytest.fixture
+def private_key():
+    return serialization.load_pem_private_key(
+        RSA_PRIVATE_KEY.encode("utf-8"),
+        password=None,
     )
 
 
-def _verify_signature(
+class MockedBoto3Client:
+    def send_email(self, Destination, Message, Source):
+        print("Sending email to:", Destination)
+        return {"MessageId": "test-message-id"}
+
+
+def verify_signature(
     signature: bytes,
     message: str,
     public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey,
@@ -110,8 +119,3 @@ def _verify_signature(
         ),
         hashes.SHA256(),
     )
-
-
-if __name__ == "__main__":
-    smoke_test()
-    print("=== tests passed ===")
