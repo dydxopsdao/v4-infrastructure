@@ -6,6 +6,8 @@ resource "aws_ecr_repository" "validator_notifier" {
   image_tag_mutability = "MUTABLE"
 }
 
+# === Basic IAM permissions ===
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -31,26 +33,39 @@ data "aws_iam_policy_document" "assume_role" {
   #   actions = ["ses:SendEmail"]
   # }
 
-  # statement {
-  #   effect = "Allow"
 
-  #   principals {
-  #     type        = "Service"
-  #     identifiers = ["lambda.amazonaws.com"]
-  #   }
 
-  #   actions = [
-  #     "logs:CreateLogGroup",
-  #     "logs:CreateLogStream",
-  #     "logs:PutLogEvents",
-  #   ]
-
-  #   resources = ["arn:aws:logs:*:*:*"]
-  # }
-  
 resource "aws_iam_role" "iam_for_lambda" {
-  name               = "iam_for_lambda"
+  name               = "lambda-assume-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+# === Logging permissions ===
+
+data "aws_iam_policy_document" "lambda_logging" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+}
+
+resource "aws_iam_policy" "lambda_logging" {
+  name        = "lambda-logging"
+  path        = "/"
+  description = "IAM policy for logging from a lambda"
+  policy      = data.aws_iam_policy_document.lambda_logging.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.iam_for_lambda.name
+  policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
 # resource "terraform_data" "build_python_package" {
