@@ -43,11 +43,3 @@ class Mailer:
         else:
             print("Email sent! Message ID:"),
             print(response["MessageId"])
-
-
-if __name__ == "__main__":
-    client = Mailer(
-        "dYdX Ops Services <infrastructure@dydxopsservices.com>", "ap-northeast-1"
-    )
-    for recipient in ["piotr+1@dydxopsservices.com", "piotr+2@dydxopsservices.com"]:
-        client.send("Amazon SES test", "Lorem ipsum", recipient)

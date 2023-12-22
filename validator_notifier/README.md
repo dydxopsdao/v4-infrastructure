@@ -49,6 +49,8 @@ In the new Terraform Cloud workspace set up the following variables:
 * `AWS_ACCESS_KEY_ID` - user your IAM user ID
 * `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key
 * `AWS_REGION` - where you want the Lambda function deployed
+* `rsa_private_key` - the RSA key generated earlier
+* `recipients` - comma-separated list of emails
 
 Then re-run:
 
