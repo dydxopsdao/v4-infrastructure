@@ -23,17 +23,6 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["ses:SendEmail"]
   }
 
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-    ]
-
-    resources = ["arn:aws:logs:*:*:*"]
-  }
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
