@@ -55,6 +55,8 @@ data "aws_iam_policy_document" "lambda_email" {
     actions = [
       "ses:SendEmail",
     ]
+
+    resources = ["arn:aws:*:*:*:*"]
   }
 }
 
