@@ -17,20 +17,37 @@ data "aws_iam_policy_document" "assume_role" {
 
     actions = ["sts:AssumeRole"]
   }
-
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["ses:SendEmail"]
-  }
-
 }
 
+
+  # statement {
+  #   effect = "Allow"
+
+  #   principals {
+  #     type        = "Service"
+  #     identifiers = ["lambda.amazonaws.com"]
+  #   }
+
+  #   actions = ["ses:SendEmail"]
+  # }
+
+  # statement {
+  #   effect = "Allow"
+
+  #   principals {
+  #     type        = "Service"
+  #     identifiers = ["lambda.amazonaws.com"]
+  #   }
+
+  #   actions = [
+  #     "logs:CreateLogGroup",
+  #     "logs:CreateLogStream",
+  #     "logs:PutLogEvents",
+  #   ]
+
+  #   resources = ["arn:aws:logs:*:*:*"]
+  # }
+  
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
