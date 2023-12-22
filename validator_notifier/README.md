@@ -101,6 +101,8 @@ pytest
 To manually build the image and upload it to the container registry (assuming it has been created):
 
 ```
+export AWS_ACCESS_KEY_ID=<terraformer credential>
+export AWS_SECRET_ACCESS_KEY=<terraformer credential>
 REGION=ap-northeast-1
 REPOSITORY=791066989954.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY

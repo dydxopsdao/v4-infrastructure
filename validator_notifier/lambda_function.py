@@ -29,6 +29,7 @@ def run(event, context):
         region=os.environ["EMAIL_AWS_REGION"],
     )
     for recipient in os.environ["RECIPIENTS"].split(","):
+        logger.info(f"Sending to: {recipient}")
         email_client.send(
             subject="dYdX Chain: action required",
             message=outgoing_message,

@@ -74,7 +74,7 @@ resource "aws_lambda_function" "notify_validators" {
       RSA_PRIVATE_KEY  = var.rsa_private_key
       EMAIL_AWS_REGION = "ap-northeast-1"
       SENDER           = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
-      RECIPIENTS       = "piotr+1@dydxopsservices.com,piotr+2@dydxopsservices.com"
+      RECIPIENTS       = var.recipients
     }
   }
 }
