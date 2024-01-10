@@ -44,13 +44,14 @@ terraform apply
 ```
 
 This will create a dedicated workspace in Terraform Cloud but the AWS deployment will fail (no credentials).
-In the new Terraform Cloud workspace set up the following variables:
+In the new Terraform Cloud workspace set up the following variables (note that some of them need to be of type
+`env` and some of type `terraform`):
 
-* `AWS_ACCESS_KEY_ID` - user your IAM user ID
-* `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key
-* `AWS_REGION` - where you want the Lambda function deployed
-* `rsa_private_key` - the RSA key generated earlier
-* `recipients` - comma-separated list of emails
+* `AWS_ACCESS_KEY_ID` - user your IAM user ID (env var)
+* `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key (env var)
+* `AWS_REGION` - where you want the Lambda function deployed (env var)
+* `rsa_private_key` - the RSA key generated earlier (terraform var)
+* `recipients` - comma-separated list of emails (terraform var)
 
 Then re-run:
 
