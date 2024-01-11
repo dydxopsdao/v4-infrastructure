@@ -27,6 +27,13 @@ openssl genrsa -out rsa-private.pem 4096
 openssl rsa -in rsa-private.pem -outform PEM -pubout -out rsa-public.pem
 ```
 
+Verify the signature created by the Lambda function:
+
+```
+base64 -d -i signature.base64 -o signature.raw
+openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt
+```
+
 Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account. Call it e.g.: `terraformer`.
 The user should have the permissions to:
 
@@ -60,6 +67,9 @@ terraform apply
 ```
 
 The Lambda function should be deployed.
+
+Alternatively, if you have created the project directly in Terraform Cloud and set it as VSC-driven, you will have
+to trigger builds either by pushing to repo or by clicking 'New run' in Terraform Cloud.
 
 Create a separate user with minimal permissions to invoke the function. An example IAM inline policy could look like this:
 
@@ -106,8 +116,8 @@ To manually build the image and upload it to the container registry (assuming it
 ```
 export AWS_ACCESS_KEY_ID=<terraformer credential>
 export AWS_SECRET_ACCESS_KEY=<terraformer credential>
-REGION=ap-northeast-1
-REPOSITORY=791066989954.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
+export REGION=ap-northeast-1
+export REPOSITORY=791066989954.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
 docker build --platform linux/amd64 -t validator-notifier:latest .
 docker tag validator-notifier:latest ${REPOSITORY}:latest

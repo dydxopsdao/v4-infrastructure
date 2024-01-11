@@ -105,11 +105,31 @@ def test_integrity():
     print(base64.b64encode(signature))
 
 
-def test_smoke_lambda(monkeypatch, private_key):
+@pytest.mark.parametrize(
+    "input_message,verified_message",
+    [
+        (
+            "lorem",
+            "lorem",
+        ),
+        (
+            "lorem\n",
+            "lorem",
+        ),
+        (
+            "lorem\r\n",
+            "lorem",
+        ),
+        (
+            "lorem\r\nipsum\rdolor\nsit\r",
+            "lorem\nipsum\ndolor\nsit",
+        ),
+    ]
+)
+def test_smoke_lambda(monkeypatch, private_key, input_message, verified_message):
     def mocked_boto3_client(*args, **kwargs):
         return MockedBoto3Client()
 
-    message = "lorem"
     os.environ["RSA_PRIVATE_KEY"] = RSA_PRIVATE_KEY
     os.environ["EMAIL_AWS_REGION"] = "region"
     os.environ["SENDER"] = "sender"
@@ -117,17 +137,17 @@ def test_smoke_lambda(monkeypatch, private_key):
     monkeypatch.setattr(boto3, "client", mocked_boto3_client)
 
     result_raw = lambda_function.run(
-        {"message": message},
+        {"message": input_message},
         {"private_key": RSA_PRIVATE_KEY.encode("ascii")},
     )
 
     result_json = json.loads(result_raw)
     print("Signature in:", result_json["signature_base64"])
     signature = base64.b64decode(result_json["signature_base64"])
-    print("Signature transformed:", base64.b64encode(signature).decode("ascii")) 
+    print("Signature transformed:", base64.b64encode(signature).decode("ascii"))
     verify_signature(
         signature,
-        message,
+        verified_message,
         private_key.public_key(),
     )
 

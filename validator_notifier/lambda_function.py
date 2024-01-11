@@ -17,10 +17,11 @@ logger.setLevel(logging.INFO)
 def run(event, context):
     logger.info(f"Invoked with: {event}")
 
-    raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("utf-8")
+    raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
 
-    signature_bytes = sign_message(private_key, event["message"])
+    message = normalize_message(event["message"])
+    signature_bytes = sign_message(private_key, message)
     signature_encoded = base64.b64encode(signature_bytes).decode("ascii")
 
     outgoing_message = build_outgoing_message(event["message"], signature_encoded)
@@ -48,12 +49,18 @@ def read_private_key(raw_key: str):
     return private_key
 
 
+def normalize_message(message: str):
+    return message.replace("\r\n", "\n").replace("\r", "\n").strip()
+
+
 def sign_message(
     private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
     message: str,
 ):
+    encoded_message = message.encode("utf-8")
+    print("Message:", encoded_message)
     signature = private_key.sign(
-        message.encode("utf-8"),
+        encoded_message,
         padding.PSS(
             mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
         ),
