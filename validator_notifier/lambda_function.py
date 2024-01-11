@@ -24,7 +24,7 @@ def run(event, context):
     signature_bytes = sign_message(private_key, message)
     signature_encoded = base64.b64encode(signature_bytes).decode("ascii")
 
-    outgoing_message = build_outgoing_message(event["message"], signature_encoded)
+    outgoing_message = build_outgoing_message(message, signature_encoded)
     email_client = Mailer(
         sender=os.environ["SENDER"],
         region=os.environ["EMAIL_AWS_REGION"],
@@ -57,8 +57,8 @@ def sign_message(
     private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
     message: str,
 ):
+    logger.info("Message to sign:", message)
     encoded_message = message.encode("utf-8")
-    print("Message:", encoded_message)
     signature = private_key.sign(
         encoded_message,
         padding.PSS(
