@@ -57,7 +57,7 @@ def sign_message(
     private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
     message: str,
 ):
-    logger.info(f"Message to sign: {message}")
+    logger.info(f"Message to sign: '{message}'")
     encoded_message = message.encode("utf-8")
     signature = private_key.sign(
         encoded_message,
