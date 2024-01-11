@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import json
 import os
 
@@ -67,7 +68,44 @@ z6WohhfweRlSiRSWJlsaBzHWvYm+fA==
 """
 
 
-def test_smoke(monkeypatch, private_key):
+def test_integrity():
+    message = "lorem"
+    print("Message:")
+    print(message)
+
+    prehashed = hashlib.sha256(message.encode("utf-8")).hexdigest()
+    print("Prehashed:")
+    print(prehashed)
+
+    private_key = serialization.load_pem_private_key(
+        RSA_PRIVATE_KEY.encode("ascii"),
+        password=None,
+    )
+
+    public_key = private_key.public_key()
+    print("Public key:")
+    print(
+        public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        ).decode("ascii")
+    )
+
+    signature = private_key.sign(
+        prehashed.encode("ascii"),
+        padding.PSS(
+            mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
+        ),
+        hashes.SHA256(),
+    )
+    print("Signature raw:")
+    print(signature)
+
+    print("Signature base64:")
+    print(base64.b64encode(signature))
+
+
+def test_smoke_lambda(monkeypatch, private_key):
     def mocked_boto3_client(*args, **kwargs):
         return MockedBoto3Client()
 
@@ -80,11 +118,13 @@ def test_smoke(monkeypatch, private_key):
 
     result_raw = lambda_function.run(
         {"message": message},
-        {"private_key": RSA_PRIVATE_KEY.encode("utf-8")},
+        {"private_key": RSA_PRIVATE_KEY.encode("ascii")},
     )
 
     result_json = json.loads(result_raw)
+    print("Signature in:", result_json["signature_base64"])
     signature = base64.b64decode(result_json["signature_base64"])
+    print("Signature transformed:", base64.b64encode(signature).decode("ascii")) 
     verify_signature(
         signature,
         message,
@@ -95,7 +135,7 @@ def test_smoke(monkeypatch, private_key):
 @pytest.fixture
 def private_key():
     return serialization.load_pem_private_key(
-        RSA_PRIVATE_KEY.encode("utf-8"),
+        RSA_PRIVATE_KEY.encode("ascii"),
         password=None,
     )
 
@@ -111,6 +151,7 @@ def verify_signature(
     message: str,
     public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey,
 ):
+    print("Message:", message.encode("utf-8"))
     public_key.verify(
         signature,
         message.encode("utf-8"),
@@ -118,4 +159,11 @@ def verify_signature(
             mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
         ),
         hashes.SHA256(),
+    )
+    print("Public key:")
+    print(
+        public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        ).decode("ascii")
     )

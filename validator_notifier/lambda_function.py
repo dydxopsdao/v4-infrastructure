@@ -17,7 +17,7 @@ logger.setLevel(logging.INFO)
 def run(event, context):
     logger.info(f"Invoked with: {event}")
 
-    raw_private_key = os.environ['RSA_PRIVATE_KEY'].encode("utf-8")
+    raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("utf-8")
     private_key = read_private_key(raw_private_key)
 
     signature_bytes = sign_message(private_key, event["message"])
@@ -63,5 +63,14 @@ def sign_message(
 
 
 def build_outgoing_message(message: str, signature: str):
-    outgoing_message = f"{message}\n\n----- RSA signature -----\n{signature}"
+    outgoing_message = (
+        f"[MESSAGE-START]{message}[MESSAGE-END]\n\n"
+        f"RSA signature:\n{signature}\n\n"
+        "How to verify:\n"
+        "1) cat > pubkey.pem  # paste the public key\n"
+        "2) echo -n 'content from between [MESSAGE-START] and [MESSAGE-END]' > message.txt\n"
+        "3) cat > signature.base64  # paste the above signature\n"
+        "4) base64 -d -i signature.base64 -o signature.raw\n"
+        "5) openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt"
+    )
     return outgoing_message
