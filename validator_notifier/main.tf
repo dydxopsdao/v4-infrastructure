@@ -72,7 +72,7 @@ resource "aws_iam_role_policy_attachment" "lambda_email" {
   policy_arn = aws_iam_policy.lambda_email.arn
 }
 
-# === Lambda function ===
+# === Image creation ===
 
 resource "aws_ecr_repository" "validator_notifier" {
   name = "validator-notifier"
@@ -81,6 +81,8 @@ resource "aws_ecr_repository" "validator_notifier" {
   }
   image_tag_mutability = "MUTABLE"
 }
+
+# === Lambda function ===
 
 resource "aws_lambda_function" "notify_validators" {
   function_name    = "notify_validators"

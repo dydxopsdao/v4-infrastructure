@@ -16,7 +16,8 @@ logger.setLevel(logging.INFO)
 
 def run(event, context):
     logger.info(f"Invoked with: {event}")
-    body = json.loads(event['body']) if event['isBase64Encoded'] else event['body']
+    body_string = base64.b64decode(event['body']) if event['isBase64Encoded'] else event['body']
+    body = json.loads(body_string)
     logger.info(f"Event body: {body}")
 
 
