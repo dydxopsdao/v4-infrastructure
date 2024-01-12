@@ -19,6 +19,7 @@ def run(event, context):
     body = json.loads(event['body']) if event['isBase64Encoded'] else event['body']
     logger.info(f"Event body: {body}")
 
+
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
 
