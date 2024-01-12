@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "lambda_email" {
     effect = "Allow"
 
     actions = [
-      "ses:SendEmail",
+      "ses:SendRawEmail",
     ]
 
     resources = ["arn:aws:ses:*:*:*"]
