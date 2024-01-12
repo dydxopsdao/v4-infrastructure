@@ -100,6 +100,10 @@ resource "aws_lambda_function" "notify_validators" {
   }
 }
 
+resource "aws_lambda_function_url" "notify_validators_url" {
+  function_name      = aws_lambda_function.notify_validators.function_name
+  authorization_type = "NONE"
+}
 
 # resource "terraform_data" "build_python_package" {
 #   triggers_replace = {
