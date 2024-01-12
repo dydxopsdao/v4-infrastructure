@@ -39,7 +39,7 @@ Verify the signature created by the Lambda function:
 
 ```
 base64 -d -i signature.base64 -o signature.raw
-openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt
+openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt
 ```
 
 Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account. Call it e.g.: `terraformer`.
@@ -67,6 +67,7 @@ In the new Terraform Cloud workspace set up the following variables (note that s
 * `AWS_REGION` - where you want the Lambda function deployed (env var)
 * `rsa_private_key` - the RSA key generated earlier (terraform var)
 * `recipients` - comma-separated list of emails (terraform var)
+* `authorization_token` - a secret that has to be passed as bearer token (terraform var)
 
 Then re-run:
 

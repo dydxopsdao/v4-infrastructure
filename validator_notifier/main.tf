@@ -94,10 +94,11 @@ resource "aws_lambda_function" "notify_validators" {
 
   environment {
     variables = {
-      RSA_PRIVATE_KEY  = var.rsa_private_key
-      EMAIL_AWS_REGION = "ap-northeast-1"
-      SENDER           = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
-      RECIPIENTS       = var.recipients
+      RSA_PRIVATE_KEY     = var.rsa_private_key
+      EMAIL_AWS_REGION    = "ap-northeast-1"
+      SENDER              = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
+      RECIPIENTS          = var.recipients
+      AUTHORIZATION_TOKEN = var.authorization_token
     }
   }
 }

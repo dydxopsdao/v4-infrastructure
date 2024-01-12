@@ -7,3 +7,8 @@ variable "recipients" {
   type        = string
   description = "Comma-separated list of recipient email addresses."
 }
+
+variable "authorization_token" {
+  type        = string
+  description = "A secret that has to be passed as bearer token."
+}
