@@ -8,8 +8,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
-# The character encoding for the email.
-CHARSET = "UTF-8"
 
 # seconds; the AWS limit is 14 emails per second
 DELAY_PER_EMAIL = 0.08

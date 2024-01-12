@@ -18,6 +18,14 @@ The input should be a JSON with the following format:
 
 ## Usage
 
+```
+curl <lambda-endpoint> -d '{"message": "the message"}'
+```
+
+The endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
+
+## Setup
+
 Set up Amazon SES by following their guide at: https://docs.aws.amazon.com/ses/latest/dg/setting-up.html#quick-start-verify-email-addresses .
 
 Prepare the RSA key:
