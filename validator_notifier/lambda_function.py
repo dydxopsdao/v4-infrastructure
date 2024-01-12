@@ -16,8 +16,8 @@ logger.setLevel(logging.INFO)
 
 def run(event, context):
     logger.info(f"Invoked with: {event}")
-    logger.info(f"Event body: {event.body}")
-    logger.info(f"Parsed JSON: {json.loads(event.body)}")
+    body = json.loads(event['body']) if event['isBase64Encoded'] else event['body']
+    logger.info(f"Event body: {body}")
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
