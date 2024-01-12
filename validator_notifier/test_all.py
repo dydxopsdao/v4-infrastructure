@@ -128,7 +128,7 @@ def test_success(monkeypatch, private_key, input_message):
 
     result_raw = lambda_function.run(
         {
-            "headers": {"authorization": "secret"},
+            "headers": {"authorization": "Bearer secret"},
             "body": base64.b64encode(
                 json.dumps({"message": input_message}).encode("ascii")
             ).decode("ascii"),
@@ -153,7 +153,7 @@ def test_forbidden():
     with pytest.raises(Exception):
         lambda_function.run(
             {
-                "headers": {"authorization": "secret"},
+                "headers": {"authorization": "Bearer secret"},
             },
             None,
         )

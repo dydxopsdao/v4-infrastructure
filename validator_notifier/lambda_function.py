@@ -67,8 +67,7 @@ def run(event, context):
     try:
         ensure_authentication(event)
     except Exception as e:
-        res = {"statusCode": 403}
-        return res
+        return {"statusCode": 403}
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
@@ -100,7 +99,7 @@ def ensure_authentication(event):
     if "authorization" not in event["headers"]:
         raise Exception("Missing Authorization header")
     prefix_len = len("Bearer ")
-    token = event["headers"]["authorization"][:prefix_len]
+    token = event["headers"]["authorization"][prefix_len:]
     if token != os.environ["AUTHORIZATION_TOKEN"]:
         logger.info(f"Given: {token} -- Expected: {os.environ['AUTHORIZATION_TOKEN']}")
         raise Exception("Invalid Authorization header")
