@@ -123,11 +123,18 @@ def test_smoke_lambda(monkeypatch, private_key, input_message):
     os.environ["EMAIL_AWS_REGION"] = "region"
     os.environ["SENDER"] = "sender"
     os.environ["RECIPIENTS"] = "recipient1,recipient2"
+    os.environ["AUTHORIZATION_TOKEN"] = "secret"
     monkeypatch.setattr(boto3, "client", mocked_boto3_client)
 
     result_raw = lambda_function.run(
-        {"message": input_message},
-        {"private_key": RSA_PRIVATE_KEY.encode("ascii")},
+        {
+            "headers": {"authorization": "secret"},
+            "body": base64.b64encode(
+                json.dumps({"message": input_message}).encode("ascii")
+            ).decode("ascii"),
+            "isBase64Encoded": True,
+        },
+        None,
     )
 
     result_json = json.loads(result_raw)
