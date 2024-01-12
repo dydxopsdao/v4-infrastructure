@@ -101,7 +101,6 @@ def ensure_authentication(event):
     prefix_len = len("Bearer ")
     token = event["headers"]["authorization"][prefix_len:]
     if token != os.environ["AUTHORIZATION_TOKEN"]:
-        logger.info(f"Given: {token} -- Expected: {os.environ['AUTHORIZATION_TOKEN']}")
         raise Exception("Invalid Authorization header")
 
 
