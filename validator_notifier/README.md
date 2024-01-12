@@ -146,3 +146,4 @@ docker push ${REPOSITORY}:latest
 * Implement email subject passing, currently outgoing email subject is hardcoded. 
 * Use AWS KMS instead of plain env var to store the private key. Security!
 * Build Docker image via Terraform. Currently it's being built manually and pushed to ECR before applying Terraform.
+
