@@ -75,11 +75,11 @@ def build_outgoing_message(message: str):
     outgoing_message = (
         f"{message}\n\n"
         "-----\n"
-        "How to verify:\n"
-        "1) Download the two attached files - one with the message and one with the signature.\n"
-        "2) Ensure that you have the public key in `pubkey.pem`.\n"
+        "To verify the authenticity of this message:\n\n"
+        "1) Download the two attached files - one with the message and one with the RSA signature.\n\n"
+        "2) Ensure that you have the dYdX Ops Services public key in `pubkey.pem`.\n\n"
         "3) Run:\n"
-        "openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt\n"
+        "openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt\n\n"
         "You should see: 'Verified OK'.\n"
     )
     return outgoing_message
