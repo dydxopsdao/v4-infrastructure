@@ -115,7 +115,7 @@ def test_integrity():
         "lorem\nipsum\ndolor\nsit",
     ],
 )
-def test_smoke_lambda(monkeypatch, private_key, input_message):
+def test_success(monkeypatch, private_key, input_message):
     def mocked_boto3_client(*args, **kwargs):
         return MockedBoto3Client()
 
@@ -146,6 +146,17 @@ def test_smoke_lambda(monkeypatch, private_key, input_message):
         input_message,
         private_key.public_key(),
     )
+
+
+def test_forbidden():
+    os.environ["AUTHORIZATION_TOKEN"] = "wrong"
+    with pytest.raises(Exception):
+        lambda_function.run(
+            {
+                "headers": {"authorization": "secret"},
+            },
+            None,
+        )
 
 
 @pytest.fixture
