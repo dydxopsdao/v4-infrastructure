@@ -16,15 +16,15 @@ logger.setLevel(logging.INFO)
 
 def run(event, context):
     logger.info(f"Invoked with: {event}")
-    body_string = base64.b64decode(event['body']) if event['isBase64Encoded'] else event['body']
+    body_string = base64.b64decode(event["body"]) if event["isBase64Encoded"] else event["body"]
     body = json.loads(body_string)
     logger.info(f"Event body: {body}")
-
+    message = body["message"].encode("utf-8")
+    logger.info(f"Message: {message}")
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
 
-    message = event["message"].encode("utf-8")
     signature = sign_message(private_key, message)
 
     outgoing_message = build_outgoing_message(message.decode("utf-8"))
