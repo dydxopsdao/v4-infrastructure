@@ -106,27 +106,16 @@ def test_integrity():
 
 
 @pytest.mark.parametrize(
-    "input_message,verified_message",
+    "input_message",
     [
-        (
-            "lorem",
-            "lorem",
-        ),
-        (
-            "lorem\n",
-            "lorem",
-        ),
-        (
-            "lorem\r\n",
-            "lorem",
-        ),
-        (
-            "lorem\r\nipsum\rdolor\nsit\r",
-            "lorem\nipsum\ndolor\nsit",
-        ),
-    ]
+        "lorem",
+        "lorem\n",
+        "lorem\r\n",
+        "lorem\r\nipsum\rdolor\nsit\r",
+        "lorem\nipsum\ndolor\nsit",
+    ],
 )
-def test_smoke_lambda(monkeypatch, private_key, input_message, verified_message):
+def test_smoke_lambda(monkeypatch, private_key, input_message):
     def mocked_boto3_client(*args, **kwargs):
         return MockedBoto3Client()
 
@@ -147,7 +136,7 @@ def test_smoke_lambda(monkeypatch, private_key, input_message, verified_message)
     print("Signature transformed:", base64.b64encode(signature).decode("ascii"))
     verify_signature(
         signature,
-        verified_message,
+        input_message,
         private_key.public_key(),
     )
 
@@ -161,8 +150,15 @@ def private_key():
 
 
 class MockedBoto3Client:
-    def send_email(self, Destination, Message, Source):
-        print("Sending email to:", Destination)
+    def send_raw_email(self, Source, Destinations, RawMessage):
+        print(
+            "Sending email to:",
+            Destinations,
+            "from:",
+            Source,
+            "with message:",
+            RawMessage,
+        )
         return {"MessageId": "test-message-id"}
 
 

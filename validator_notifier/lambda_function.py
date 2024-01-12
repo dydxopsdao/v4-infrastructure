@@ -20,11 +20,10 @@ def run(event, context):
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
 
-    message = normalize_message(event["message"])
-    signature_bytes = sign_message(private_key, message)
-    signature_encoded = base64.b64encode(signature_bytes).decode("ascii")
+    message = event["message"].encode("utf-8")
+    signature = sign_message(private_key, message)
 
-    outgoing_message = build_outgoing_message(message, signature_encoded)
+    outgoing_message = build_outgoing_message(message.decode("utf-8"))
     email_client = Mailer(
         sender=os.environ["SENDER"],
         region=os.environ["EMAIL_AWS_REGION"],
@@ -33,11 +32,15 @@ def run(event, context):
         logger.info(f"Sending to: {recipient}")
         email_client.send(
             subject="dYdX Chain: action required",
-            message=outgoing_message,
+            outgoing_message=outgoing_message,
+            signed_message=message,
+            signature=signature,
             recipient=recipient,
         )
 
-    response = {"signature_base64": signature_encoded}
+    response = {
+        "signature_base64": base64.b64encode(signature).decode("ascii"),
+    }
     return json.dumps(response)
 
 
@@ -55,12 +58,11 @@ def normalize_message(message: str):
 
 def sign_message(
     private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
-    message: str,
+    message: bytes,
 ):
-    logger.info(f"Message to sign: '{message}'")
-    encoded_message = message.encode("utf-8")
+    logger.info(f"Message to sign: '{message.decode('utf-8')}'")
     signature = private_key.sign(
-        encoded_message,
+        message,
         padding.PSS(
             mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
         ),
@@ -69,15 +71,15 @@ def sign_message(
     return signature
 
 
-def build_outgoing_message(message: str, signature: str):
+def build_outgoing_message(message: str):
     outgoing_message = (
-        f"[MESSAGE-START]{message}[MESSAGE-END]\n\n"
-        f"RSA signature:\n{signature}\n\n"
+        f"{message}\n\n"
+        "-----\n"
         "How to verify:\n"
-        "1) cat > pubkey.pem  # paste the public key\n"
-        "2) echo -n 'content from between [MESSAGE-START] and [MESSAGE-END]' > message.txt\n"
-        "3) cat > signature.base64  # paste the above signature\n"
-        "4) base64 -d -i signature.base64 -o signature.raw\n"
-        "5) openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt"
+        "1) Download the two attached files - one with the message and one with the signature.\n"
+        "2) Ensure that you have the public key in `pubkey.pem`.\n"
+        "3) Run:\n"
+        "openssl dgst -sha256 -verify pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt\n"
+        "You should see: 'Verified OK'.\n"
     )
     return outgoing_message
