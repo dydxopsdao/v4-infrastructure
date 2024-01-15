@@ -19,7 +19,7 @@ The input should be a JSON with the following format:
 ## Usage
 
 ```
-curl <lambda-endpoint> -d '{"message": "the message"}'
+curl -v <lambda-endpoint> -H 'Authorization: Bearer <secret>' -d '{"subject": "lorem", "content":"ipsum"}'
 ```
 
 The endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
@@ -145,6 +145,5 @@ docker push ${REPOSITORY}:latest
 
 ## TODO
 
-* Implement email subject passing, currently outgoing email subject is hardcoded. 
 * Use AWS KMS instead of plain env var to store the private key. Security!
 * Build Docker image via Terraform. Currently it's being built manually and pushed to ECR before applying Terraform.
