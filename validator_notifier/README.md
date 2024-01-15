@@ -80,7 +80,10 @@ The Lambda function should be deployed.
 Alternatively, if you have created the project directly in Terraform Cloud and set it as VSC-driven, you will have
 to trigger builds either by pushing to repo or by clicking 'New run' in Terraform Cloud.
 
-Create a separate user with minimal permissions to invoke the function. An example IAM inline policy could look like this:
+### Optional: dedicated invoker user
+
+You will be able to call the Lambda function via HTTPS. However, if you want to invoke it via AWS internal means, you can 
+create a separate user with minimal permissions, say to list and invoke the function. An example IAM inline policy could look like this:
 
 ```
 {
