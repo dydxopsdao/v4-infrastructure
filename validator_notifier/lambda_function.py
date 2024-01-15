@@ -27,15 +27,15 @@ def run(event, context):
         base64.b64decode(event["body"]) if event["isBase64Encoded"] else event["body"]
     )
     body = json.loads(body_string)
-    subject = body["subject"].encode("utf-8")
-    content = body["content"].encode("utf-8")
-    complete_message = f"{body['subject']}\n\n{body['content']}".encode("utf-8")
-    decorated_content = decorate_content(content.decode("utf-8"))
+    subject = body["subject"]
+    content = body["content"]
+    signed_message = f"{subject}\n\n{content}".encode("utf-8")
+    decorated_content = decorate_content(content)
     logger.info(f"Subject: {subject}; Content: {content}")
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
-    signature = sign_message(private_key, complete_message)
+    signature = sign_message(private_key, signed_message)
 
     email_client = Mailer(
         sender=os.environ["SENDER"],
@@ -44,9 +44,9 @@ def run(event, context):
     for recipient in os.environ["RECIPIENTS"].split(","):
         logger.info(f"Sending to: {recipient}")
         email_client.send(
-            subject=subject.decode("utf-8"),
+            subject=subject,
             content=decorated_content,
-            signed_message=complete_message,
+            signed_message=signed_message,
             signature=signature,
             recipient=recipient,
         )
@@ -74,14 +74,10 @@ def read_private_key(raw_key: str):
     return private_key
 
 
-def normalize_message(message: str):
-    return message.replace("\r\n", "\n").replace("\r", "\n").strip()
-
-
 def sign_message(
     private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
     message: bytes,
-):
+) -> bytes:
     logger.info(f"Message to sign: '{message.decode('utf-8')}'")
     signature = private_key.sign(
         message,
@@ -93,7 +89,7 @@ def sign_message(
     return signature
 
 
-def decorate_content(message: str):
+def decorate_content(message: str) -> str:
     outgoing_message = (
         f"{message}\n\n"
         "-----\n"
