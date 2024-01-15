@@ -82,6 +82,18 @@ resource "aws_ecr_repository" "validator_notifier" {
   image_tag_mutability = "MUTABLE"
 }
 
+resource "docker_image" "default" {
+  name = aws_ecr_repository.validator_notifier.name
+  build {
+    context = "."
+    tag     = ["${aws_ecr_repository.validator_notifier.name}:latest"]
+  }
+  platform = "linux/amd64"
+  triggers = {
+    dir_sha1 = sha1(join("", [for f in fileset(path.module, "src/*") : filesha1(f)]))
+  }
+}
+
 # === Lambda function ===
 
 resource "aws_lambda_function" "notify_validators" {
@@ -90,7 +102,7 @@ resource "aws_lambda_function" "notify_validators" {
   image_uri        = "${aws_ecr_repository.validator_notifier.repository_url}:latest"
   role             = aws_iam_role.iam_for_lambda.arn
   timeout          = 90
-  source_code_hash = timestamp()
+  source_code_hash = timestamp() # Force update on every apply
 
   environment {
     variables = {
@@ -107,40 +119,3 @@ resource "aws_lambda_function_url" "notify_validators_url" {
   function_name      = aws_lambda_function.notify_validators.function_name
   authorization_type = "NONE"
 }
-
-# resource "terraform_data" "build_python_package" {
-#   triggers_replace = {
-#     always = timestamp()
-#   }
-
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       rm -rf ./package
-#       mkdir -p ./package
-#       pip install --upgrade pip
-#       pip install --target ./package -r requirements.txt
-#       cp ./message_signer.py ./package
-#     EOT
-#   }
-# }
-
-# resource "docker_image" "message_signer" {
-#   name = "message-signer"
-#   build {
-#     context = "."
-#     tag     = ["message-signer:lastest"]
-#     # build_arg = {
-#     #   foo : "zoo"
-#     # }
-#     # label = {
-#     #   author : "zoo"
-#     # }
-#   }
-# }
-
-# data "archive_file" "lambda" {
-#   depends_on  = [terraform_data.build_python_package]
-#   type        = "zip"
-#   source_dir  = "package"
-#   output_path = "package.zip"
-# }
