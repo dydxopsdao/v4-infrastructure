@@ -21,7 +21,7 @@ class Mailer:
     def send(
         self,
         subject: str,
-        outgoing_message: str,
+        content: str,
         signed_message: bytes,
         signature: bytes,
         recipient: str,
@@ -38,7 +38,7 @@ class Mailer:
             msg["To"] = recipient
             msg_body = MIMEMultipart("alternative")
 
-            textpart = MIMEText(outgoing_message.encode("utf-8"), "plain", "UTF-8")
+            textpart = MIMEText(content.encode("utf-8"), "plain", "UTF-8")
             msg.attach(textpart)
 
             attachment_1 = MIMEApplication(signed_message)

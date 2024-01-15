@@ -106,16 +106,14 @@ def test_integrity():
 
 
 @pytest.mark.parametrize(
-    "input_message",
+    "subject,content,expected_to_sign",
     [
-        "lorem",
-        "lorem\n",
-        "lorem\r\n",
-        "lorem\r\nipsum\rdolor\nsit\r",
-        "lorem\nipsum\ndolor\nsit",
+        ("omg!", "lorem", "omg!\n\nlorem"),
+        ("o\nm\ng", "lorem\n", "o\nm\ng\n\nlorem\n"),
+        ("o\rmg!", "\rlorem\r\n", "o\rmg!\n\n\rlorem\r\n"),
     ],
 )
-def test_success(monkeypatch, private_key, input_message):
+def test_success(monkeypatch, private_key, subject, content, expected_to_sign):
     def mocked_boto3_client(*args, **kwargs):
         return MockedBoto3Client()
 
@@ -130,7 +128,12 @@ def test_success(monkeypatch, private_key, input_message):
         {
             "headers": {"authorization": "Bearer secret"},
             "body": base64.b64encode(
-                json.dumps({"message": input_message}).encode("ascii")
+                json.dumps(
+                    {
+                        "subject": subject,
+                        "content": content,
+                    }
+                ).encode("ascii")
             ).decode("ascii"),
             "isBase64Encoded": True,
         },
@@ -143,20 +146,20 @@ def test_success(monkeypatch, private_key, input_message):
     print("Signature transformed:", base64.b64encode(signature).decode("ascii"))
     verify_signature(
         signature,
-        input_message,
+        expected_to_sign,
         private_key.public_key(),
     )
 
 
 def test_forbidden():
-    os.environ["AUTHORIZATION_TOKEN"] = "wrong"
-    with pytest.raises(Exception):
-        lambda_function.run(
-            {
-                "headers": {"authorization": "Bearer secret"},
-            },
-            None,
-        )
+    os.environ["AUTHORIZATION_TOKEN"] = "secret"
+    result = lambda_function.run(
+        {
+            "headers": {"authorization": "Bearer wrong"},
+        },
+        None,
+    )
+    assert result == {"statusCode": 403}
 
 
 @pytest.fixture
