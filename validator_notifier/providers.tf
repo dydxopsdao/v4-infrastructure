@@ -29,7 +29,7 @@ data "aws_ecr_authorization_token" "token" {}
 
 provider "docker" {
   registry_auth {
-    address  = aws_ecr_authorization_token.token.proxy_endpoint
+    address  = data.aws_ecr_authorization_token.token.proxy_endpoint
     username = data.aws_ecr_authorization_token.token.user_name
     password = data.aws_ecr_authorization_token.token.password
   }
