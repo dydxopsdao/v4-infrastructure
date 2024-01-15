@@ -6,9 +6,12 @@ The input should be a JSON with the following format:
 
 ```
 {
-    "message": "<a message string to be signed and sent>"
+    "subject": "The world depends on you!",
+    "content": "Please lorem your ipsums by tomorrow."
 }
 ```
+
+The outgoing emails will include the required message, along with its RSA signature.
 
 ## Assumptions
 
