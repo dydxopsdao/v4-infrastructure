@@ -89,20 +89,18 @@ resource "aws_codebuild_project" "validator_notifier" {
             - echo Building the Docker image...  
             - docker build -t $REPOSITORY_URI:latest .
             - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-        image_publish:
+        post_build:
           commands:
             - echo Build completed on `date`
             - echo Pushing the Docker image...
             - docker push $REPOSITORY_URI:latest
             - docker push $REPOSITORY_URI:$IMAGE_TAG
-        conditional_deploy:
-          commands:
             - echo Checking if the Lambda function exists...
-            - aws lambda get-function --region=${data.aws_region.current.name} --function-name=${local.function_name} \
+            - aws lambda get-function --region=${data.aws_region.current.name} --function-name=${local.lambda_function_name} \
               && echo Updating the Lambda function... \
               && aws lambda update-function-code \
               --region ${data.aws_region.current.name} \
-              --function-name ${local.function_name} \
+              --function-name ${local.lambda_function_name} \
               --image-uri $REPOSITORY_URI:latest \
               --publish
       EOF
