@@ -55,7 +55,7 @@ The user should have the permissions to:
 Set up the Terraform project:
 
 ```
-cd ./validator_notifier
+cd ./validator_notifier/terraform
 terraform login
 terraform init
 terraform apply
