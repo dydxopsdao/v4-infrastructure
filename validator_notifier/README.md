@@ -27,9 +27,24 @@ curl -v <lambda-endpoint> -H 'Authorization: Bearer <secret>' -d '{"subject": "l
 
 The endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
 
+To verify the signature created by the Lambda function run:
+
+```
+base64 -d -i signature.base64 -o signature.raw
+openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt
+```
+
 ## Setup
 
+### AWS account
+
+It is recommended to created a dedicated AWS account for the project. This is a good practice for the sake of security and maintainability.
+
+### SES
+
 Set up Amazon SES by following their guide at: https://docs.aws.amazon.com/ses/latest/dg/setting-up.html#quick-start-verify-email-addresses .
+
+### Private key
 
 Prepare the RSA key:
 
@@ -38,31 +53,27 @@ openssl genrsa -out rsa-private.pem 4096
 openssl rsa -in rsa-private.pem -outform PEM -pubout -out rsa-public.pem
 ```
 
-Verify the signature created by the Lambda function:
+### IAM user
 
-```
-base64 -d -i signature.base64 -o signature.raw
-openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt
-```
-
-Prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account. Call it e.g.: `terraformer`.
-The user should have the permissions to:
+Manually prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
+Call it e.g.: `terraformer`. The user should have the permissions to:
 
 * Create IAM roles,
 * Create Lambda functions,
 * Create and manage ECR (container registry).
 
-Set up the Terraform project:
+Go to `IAM -> Users -> [your new user] -> Permissions` and add the following managed policies:
 
-```
-cd ./validator_notifier/terraform
-terraform login
-terraform init
-terraform apply
-```
+* AmazonEC2ContainerRegistryFullAccess
+* AWSLambda_FullAccess
+* IAMFullAccess
 
-This will create a dedicated workspace in Terraform Cloud but the AWS deployment will fail (no credentials).
-In the new Terraform Cloud workspace set up the following variables (note that some of them need to be of type
+### Terraform project
+
+Set up a Terraform project in Terraform Cloud. Make sure to point the VCS trigger
+to the `/validator_notifier/terraform` directory.
+
+Add the following variables (note that some of them need to be of type
 `env` and some of type `terraform`):
 
 * `AWS_ACCESS_KEY_ID` - user your IAM user ID (env var)
@@ -72,21 +83,13 @@ In the new Terraform Cloud workspace set up the following variables (note that s
 * `recipients` - comma-separated list of emails (terraform var)
 * `authorization_token` - a secret that has to be passed as bearer token (terraform var)
 
-Then re-run:
-
-```
-terraform apply
-```
-
-The Lambda function should be deployed.
-
-Alternatively, if you have created the project directly in Terraform Cloud and set it as VSC-driven, you will have
-to trigger builds either by pushing to repo or by clicking 'New run' in Terraform Cloud.
+Create a _run_.
 
 ### Optional: dedicated invoker user
 
-You will be able to call the Lambda function via HTTPS. However, if you want to invoke it via AWS internal means, you can 
-create a separate user with minimal permissions, say to list and invoke the function. An example IAM inline policy could look like this:
+You will be able to call the Lambda function via HTTPS. However, if you want to invoke it via AWS internal systems
+(e.g. for programmatic use cases, without going through the public Internet), you can create a separate user
+with minimal permissions, say to list and invoke the function. An example IAM inline policy could look like this:
 
 ```
 {

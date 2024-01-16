@@ -15,23 +15,17 @@ logger.setLevel(logging.INFO)
 
 
 def run(event, context):
-    logger.info(f"Invoked with: {event}")
-
     try:
         ensure_authentication(event)
     except Exception as e:
         logger.info(f"Authentication failed: {e}")
         return {"statusCode": 403}
 
-    body_string = (
-        base64.b64decode(event["body"]) if event["isBase64Encoded"] else event["body"]
-    )
-    body = json.loads(body_string)
-    subject = body["subject"]
-    content = body["content"]
-    signed_message = f"{subject}\n\n{content}".encode("utf-8")
-    decorated_content = decorate_content(content)
-    logger.info(f"Subject: {subject}; Content: {content}")
+    try:
+        subject, signed_message, decorated_content = parse_input(event)
+    except Exception as e:
+        logger.info(f"Input parsing failed: {e}")
+        return {"statusCode": 400}
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
@@ -66,6 +60,36 @@ def ensure_authentication(event):
         raise Exception("Invalid Authorization header")
 
 
+def parse_input(event):
+    body_string = (
+        base64.b64decode(event["body"]) if event["isBase64Encoded"] else event["body"]
+    )
+    body = json.loads(body_string)
+
+    subject = body["subject"]
+    content = body["content"]
+    logger.info(f"Subject: {subject}; Content: {content}")
+
+    signed_message = f"{subject}\n\n{content}".encode("utf-8")
+    decorated_content = decorate_content(content)
+
+    return subject, signed_message, decorated_content
+
+
+def decorate_content(original_message: str) -> str:
+    decorated_message = (
+        f"{original_message}\n\n"
+        "-----\n"
+        "To verify the authenticity of this message:\n\n"
+        "1) Download the two attached files - one with the message and one with the RSA signature.\n\n"
+        "2) Ensure that you have the dYdX Ops Services public key in `dydxops-pubkey.pem`.\n\n"
+        "3) Run:\n"
+        "openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt\n\n"
+        "You should see: 'Verified OK'.\n"
+    )
+    return decorated_message
+
+
 def read_private_key(raw_key: str):
     private_key = serialization.load_pem_private_key(
         raw_key,
@@ -74,6 +98,7 @@ def read_private_key(raw_key: str):
     return private_key
 
 
+# See: https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#signing
 def sign_message(
     private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
     message: bytes,
@@ -87,17 +112,3 @@ def sign_message(
         hashes.SHA256(),
     )
     return signature
-
-
-def decorate_content(message: str) -> str:
-    outgoing_message = (
-        f"{message}\n\n"
-        "-----\n"
-        "To verify the authenticity of this message:\n\n"
-        "1) Download the two attached files - one with the message and one with the RSA signature.\n\n"
-        "2) Ensure that you have the dYdX Ops Services public key in `dydxops-pubkey.pem`.\n\n"
-        "3) Run:\n"
-        "openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt\n\n"
-        "You should see: 'Verified OK'.\n"
-    )
-    return outgoing_message
