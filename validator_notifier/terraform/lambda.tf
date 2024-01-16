@@ -63,7 +63,7 @@ data "external" "build_image_with_codebuild" {
   # BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
   # While not BUILD_PHASE == "COMPLETED":
   # BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
-  program = ["bash", "echo dreams..."]
+  program = ["bash", "-c", "'echo dreams...'"]
 
   depends_on = [aws_codebuild_project.validator_notifier]
 }
