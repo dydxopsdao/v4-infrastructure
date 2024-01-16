@@ -120,17 +120,17 @@ resource "aws_ecr_repository" "validator_notifier" {
   image_tag_mutability = "MUTABLE"
 }
 
-resource "docker_image" "default" {
-  name = aws_ecr_repository.validator_notifier.name
-  build {
-    context = "."
-    tag     = ["${aws_ecr_repository.validator_notifier.name}:latest"]
-  }
-  platform = "linux/amd64"
-  triggers = {
-    dir_sha1 = sha1(join("", [for f in fileset(path.module, "src/*") : filesha1(f)]))
-  }
-}
+# resource "docker_image" "default" {
+#   name = aws_ecr_repository.validator_notifier.name
+#   build {
+#     context = "."
+#     tag     = ["${aws_ecr_repository.validator_notifier.name}:latest"]
+#   }
+#   platform = "linux/amd64"
+#   triggers = {
+#     dir_sha1 = sha1(join("", [for f in fileset(path.module, "src/*") : filesha1(f)]))
+#   }
+# }
 
 # === Lambda function ===
 
