@@ -62,7 +62,7 @@ resource "aws_ecr_repository" "validator_notifier" {
   image_tag_mutability = "MUTABLE"
 }
 
-resource "aws_codebuild_project" "this" {
+resource "aws_codebuild_project" "validator_notifier" {
   name          = "validator-notifier"
   description   = "Managed by Terraform"
   service_role  = aws_iam_role.builder.arn
