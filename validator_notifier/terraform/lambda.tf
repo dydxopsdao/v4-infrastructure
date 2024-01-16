@@ -58,6 +58,16 @@ locals {
   lambda_function_name = "notify_validators"
 }
 
+data "external" "build_image_with_codebuild" {
+  # TODO: Trigger a build and wait until it's finished. Something along the lines of:
+  # BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
+  # While not BUILD_PHASE == "COMPLETED":
+  # BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
+  program = ["python", "-c", "print('{}')"]
+
+  depends_on = [aws_codebuild_project.validator_notifier]
+}
+
 resource "aws_lambda_function" "notify_validators" {
   function_name    = local.lambda_function_name
   package_type     = "Image"
@@ -76,7 +86,7 @@ resource "aws_lambda_function" "notify_validators" {
     }
   }
 
-  depends_on = [aws_codebuild_project.validator_notifier]
+  depends_on = [data.external.build_image_with_codebuild]
 }
 
 resource "aws_lambda_function_url" "notify_validators_url" {

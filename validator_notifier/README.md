@@ -161,3 +161,8 @@ Then trigger a build in Terraform Cloud.
 * Build Docker image via Terraform. Currently it's being built manually and pushed to ECR before applying Terraform.
 * Authenticate via asymmetric cryptography - custom private key passed for the HTTPS call. Use API gateway if needed. Ditch the bearer token. Security!
 * Use AWS KMS instead of plain env var to store the private key. Security!
+* Try to encapsulate image building in Terraform via CLI commands in data.external. Try:
+    ```
+    BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
+    BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
+    ```
