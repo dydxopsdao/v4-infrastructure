@@ -34,9 +34,9 @@ data "aws_iam_policy_document" "builder_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "ses:SendRawEmail",
+      "ecr:*",
     ]
-    resources = ["arn:aws:ses:*:*:*"]
+    resources = ["*"]
   }
 }
 
@@ -81,8 +81,8 @@ resource "aws_codebuild_project" "validator_notifier" {
         pre_build:
           commands:
             - echo Logging in to Amazon ECR...
-            - aws ecr get-login-password --region ${data.aws_region.current.name} | docker login --username AWS --password-stdin ${aws_ecr_repository.validator_notifier.repository_url}
             - REPOSITORY_URI=${aws_ecr_repository.validator_notifier.repository_url}
+            - docker login --username AWS --password \$(aws ecr get-login-password --region ${data.aws_region.current.name}) $REPOSITORY_URI
         build:
           commands:
             - echo Build started on `date`
