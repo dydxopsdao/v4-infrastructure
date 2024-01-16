@@ -107,7 +107,7 @@ resource "aws_codebuild_project" "validator_notifier" {
   }
 
   environment {
-    compute_type                = "BUILD_LAMBDA_1GB"
+    compute_type                = "BUILD_GENERAL1_SMALL"
     type                        = "LINUX_CONTAINER"
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
     image_pull_credentials_type = "CODEBUILD"
