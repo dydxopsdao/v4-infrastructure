@@ -54,6 +54,11 @@ resource "aws_iam_role_policy_attachment" "builder_permissions" {
 
 # === Image creation ===
 
+resource "aws_ecr_pull_through_cache_rule" "this" {
+  ecr_repository_prefix = "ecr-public"
+  upstream_registry_url = "public.ecr.aws"
+}
+
 resource "aws_ecr_repository" "validator_notifier" {
   name = "validator-notifier"
   image_scanning_configuration {
