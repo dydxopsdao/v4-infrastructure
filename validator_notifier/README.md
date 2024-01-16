@@ -141,6 +141,7 @@ export AWS_SECRET_ACCESS_KEY=<terraformer credential>
 export REGION=ap-northeast-1
 export REPOSITORY=791066989954.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
+cd ./src
 docker build --platform linux/amd64 -t validator-notifier:latest .
 docker tag validator-notifier:latest ${REPOSITORY}:latest
 docker push ${REPOSITORY}:latest

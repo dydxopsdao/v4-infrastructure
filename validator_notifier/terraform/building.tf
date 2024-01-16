@@ -88,13 +88,17 @@ resource "aws_codebuild_project" "this" {
             - echo Build started on `date`
             - echo Building the Docker image...  
             - docker build -t $REPOSITORY_URI:latest .
-            - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG   
-        post_build:
+            - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+        image_publish:
           commands:
             - echo Build completed on `date`
             - echo Pushing the Docker image...
             - docker push $REPOSITORY_URI:latest
             - docker push $REPOSITORY_URI:$IMAGE_TAG
+        deploy:
+          commands:
+            - echo Deploying the Docker image to ECR...
+            - aws lambda update-function-code --region ${data.aws_region.current.name} --function-name notify_validators --image-uri $REPOSITORY_URI:latest --publish
       EOF
   }
 
