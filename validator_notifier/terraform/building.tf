@@ -29,6 +29,7 @@ data "aws_iam_policy_document" "builder_permissions" {
       "logs:PutLogEvents",
       "ecr:*",
       "lambda:GetFunction",
+      "lambda:UpdateFunctionCode",
     ]
     resources = ["*"]
   }
