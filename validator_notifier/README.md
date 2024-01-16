@@ -56,17 +56,14 @@ openssl rsa -in rsa-private.pem -outform PEM -pubout -out rsa-public.pem
 ### IAM user
 
 Manually prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
-Call it e.g.: `terraformer`. The user should have the permissions to:
-
-* Create IAM roles,
-* Create Lambda functions,
-* Create and manage ECR (container registry).
-
-Go to `IAM -> Users -> [your new user] -> Permissions` and add the following managed policies:
+Call it e.g.: `terraformer`. Go to:
+`IAM -> Users -> [your new user] -> Permissions -> Add permissions -> Attach policies directly`
+and add the following managed policies:
 
 * AmazonEC2ContainerRegistryFullAccess
 * AWSLambda_FullAccess
 * IAMFullAccess
+* AWSCodeBuildAdminAccess
 
 ### Terraform project
 
