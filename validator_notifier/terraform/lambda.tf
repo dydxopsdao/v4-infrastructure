@@ -57,7 +57,7 @@ resource "aws_iam_role_policy_attachment" "lambda_permissions" {
 resource "aws_lambda_function" "notify_validators" {
   function_name    = "notify_validators"
   package_type     = "Image"
-  image_uri        = "ecr-public.us-east-1.amazonaws.com/lambda/python:3.11" # Dummy, to be replaced by CodeBuild
+  image_uri        = "${aws_ecr_repository.validator_notifier.repository_url}:latest"
   role             = aws_iam_role.iam_for_lambda.arn
   timeout          = 90
   source_code_hash = timestamp() # Force update on every apply
@@ -65,7 +65,7 @@ resource "aws_lambda_function" "notify_validators" {
   environment {
     variables = {
       RSA_PRIVATE_KEY     = var.rsa_private_key
-      EMAIL_AWS_REGION    = "ap-northeast-1"
+      EMAIL_AWS_REGION    = data.aws_region.current.name
       SENDER              = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
       RECIPIENTS          = var.recipients
       AUTHORIZATION_TOKEN = var.authorization_token

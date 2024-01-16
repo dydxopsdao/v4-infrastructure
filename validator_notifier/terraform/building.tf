@@ -62,17 +62,6 @@ resource "aws_ecr_repository" "validator_notifier" {
   image_tag_mutability = "MUTABLE"
 }
 
-resource "aws_ecr_replication_configuration" "this" {
-  replication_configuration {
-    rule {
-      destination {
-        region      = "us-east-1"
-        registry_id = data.aws_caller_identity.current.account_id
-      }
-    }
-  }
-}
-
 resource "aws_codebuild_project" "this" {
   name          = "validator-notifier"
   description   = "Managed by Terraform"
@@ -106,19 +95,18 @@ resource "aws_codebuild_project" "this" {
             - echo Pushing the Docker image...
             - docker push $REPOSITORY_URI:latest
             - docker push $REPOSITORY_URI:$IMAGE_TAG
-        deploy:
+        conditional_deploy:
           commands:
-            - echo Updating the Lambda function...
+            - echo Checking if the Lambda function exists...
+            - aws lambda get-function --region=${data.aws_region.current.name} --function-name=${aws_lambda_function.notify_validators.function_name} \
+              && echo Updating the Lambda function... \
+              && aws lambda update-function-code \
+              --region ${data.aws_region.current.name} \
+              --function-name ${aws_lambda_function.notify_validators.function_name} \
+              --image-uri $REPOSITORY_URI:latest \
+              --publish
       EOF
   }
-            # - aws lambda create-function \
-            #   --function-name notify-validators \
-            #   --runtime nodejs18.x \
-            #   --zip-file fileb://my-function.zip \
-            #   --handler my-function.handler \
-            #   --role arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-tges6bf4
-
-            # - aws lambda update-function-code --region ${data.aws_region.current.name} --function-name notify_validators --image-uri $REPOSITORY_URI:latest --publish
 
   environment {
     compute_type                = "BUILD_LAMBDA_1GB"
