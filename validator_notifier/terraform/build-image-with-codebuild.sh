@@ -3,11 +3,12 @@
 # Exit if any of the intermediate steps fail
 set -e
 
-# Extract "foo" and "baz" arguments from the input into
-# FOO and BAZ shell variables.
+# Extract arguments from the input into shell variables.
 # jq will ensure that the values are properly quoted
 # and escaped for consumption by the shell.
 eval "$(jq -r '@sh "REGION=\(.region)"')"
+
+aws codebuild start-build --region=$REGION --project-name=validator-notifier
 
 BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
 BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
