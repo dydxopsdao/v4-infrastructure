@@ -98,11 +98,11 @@ resource "aws_codebuild_project" "validator_notifier" {
         conditional_deploy:
           commands:
             - echo Checking if the Lambda function exists...
-            - aws lambda get-function --region=${data.aws_region.current.name} --function-name=${aws_lambda_function.notify_validators.function_name} \
+            - aws lambda get-function --region=${data.aws_region.current.name} --function-name=${local.function_name} \
               && echo Updating the Lambda function... \
               && aws lambda update-function-code \
               --region ${data.aws_region.current.name} \
-              --function-name ${aws_lambda_function.notify_validators.function_name} \
+              --function-name ${local.function_name} \
               --image-uri $REPOSITORY_URI:latest \
               --publish
       EOF

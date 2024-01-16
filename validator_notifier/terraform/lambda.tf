@@ -54,8 +54,12 @@ resource "aws_iam_role_policy_attachment" "lambda_permissions" {
 
 # === Lambda function ===
 
+locals {
+  function_name = "notify_validators"
+}
+
 resource "aws_lambda_function" "notify_validators" {
-  function_name    = "notify_validators"
+  function_name    = local.function_name
   package_type     = "Image"
   image_uri        = "${aws_ecr_repository.validator_notifier.repository_url}:latest"
   role             = aws_iam_role.iam_for_lambda.arn
