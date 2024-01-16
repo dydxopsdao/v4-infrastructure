@@ -101,7 +101,7 @@ resource "aws_codebuild_project" "this" {
   environment {
     compute_type                = "BUILD_LAMBDA_1GB"
     type                        = "LINUX_LAMBDA_CONTAINER"
-    image                       = "aws/codebuild/amazonlinux-aarch64-lambda-standard:python3.12"
+    image                       = "aws/codebuild/amazonlinux-x86_64-lambda-standard:python3.12"
     image_pull_credentials_type = "CODEBUILD"
 
     # dynamic "environment_variable" {
