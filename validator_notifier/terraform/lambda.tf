@@ -71,6 +71,8 @@ resource "aws_lambda_function" "notify_validators" {
       AUTHORIZATION_TOKEN = var.authorization_token
     }
   }
+
+  depends_on = [aws_codebuild_project.validator_notifier]
 }
 
 resource "aws_lambda_function_url" "notify_validators_url" {
