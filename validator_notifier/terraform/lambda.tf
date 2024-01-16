@@ -57,7 +57,7 @@ resource "aws_iam_role_policy_attachment" "lambda_permissions" {
 resource "aws_lambda_function" "notify_validators" {
   function_name    = "notify_validators"
   package_type     = "Image"
-  image_uri        = "public.ecr.aws/lambda/python:3.11"
+  image_uri        = "ecr-public.us-east-1.amazonaws.com/lambda/python:3.11" # Dummy, to be replaced by CodeBuild
   role             = aws_iam_role.iam_for_lambda.arn
   timeout          = 90
   source_code_hash = timestamp() # Force update on every apply

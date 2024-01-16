@@ -54,17 +54,23 @@ resource "aws_iam_role_policy_attachment" "builder_permissions" {
 
 # === Image creation ===
 
-resource "aws_ecr_pull_through_cache_rule" "this" {
-  ecr_repository_prefix = "ecr-public"
-  upstream_registry_url = "public.ecr.aws"
-}
-
 resource "aws_ecr_repository" "validator_notifier" {
   name = "validator-notifier"
   image_scanning_configuration {
     scan_on_push = true
   }
   image_tag_mutability = "MUTABLE"
+}
+
+resource "aws_ecr_replication_configuration" "this" {
+  replication_configuration {
+    rule {
+      destination {
+        region      = "us-east-1"
+        registry_id = data.aws_caller_identity.current.account_id
+      }
+    }
+  }
 }
 
 resource "aws_codebuild_project" "this" {
@@ -102,10 +108,17 @@ resource "aws_codebuild_project" "this" {
             - docker push $REPOSITORY_URI:$IMAGE_TAG
         deploy:
           commands:
-            - echo Deploying the Docker image to ECR...
-            - aws lambda update-function-code --region ${data.aws_region.current.name} --function-name notify_validators --image-uri $REPOSITORY_URI:latest --publish
+            - echo Updating the Lambda function...
       EOF
   }
+            # - aws lambda create-function \
+            #   --function-name notify-validators \
+            #   --runtime nodejs18.x \
+            #   --zip-file fileb://my-function.zip \
+            #   --handler my-function.handler \
+            #   --role arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-tges6bf4
+
+            # - aws lambda update-function-code --region ${data.aws_region.current.name} --function-name notify_validators --image-uri $REPOSITORY_URI:latest --publish
 
   environment {
     compute_type                = "BUILD_LAMBDA_1GB"
