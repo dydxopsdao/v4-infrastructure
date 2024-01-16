@@ -64,7 +64,7 @@ resource "aws_ecr_repository" "validator_notifier" {
 
 resource "aws_codebuild_project" "this" {
   name          = "validator-notifier"
-  description   = "Codebuild project for Validator Notifier"
+  description   = "Managed by Terraform"
   service_role  = aws_iam_role.builder.arn
 
   artifacts {
