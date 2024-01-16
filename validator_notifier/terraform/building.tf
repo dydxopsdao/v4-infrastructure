@@ -83,6 +83,7 @@ resource "aws_codebuild_project" "validator_notifier" {
           commands:
             - echo Logging in to Amazon ECR...
             - REPOSITORY_URI=${aws_ecr_repository.validator_notifier.repository_url}
+            - IMAGE_TAG=$(date +%Y-%m-%d-%H-%M-%S)
             - docker login --username AWS --password $(aws ecr get-login-password --region ${data.aws_region.current.name}) $REPOSITORY_URI
         build:
           commands:
