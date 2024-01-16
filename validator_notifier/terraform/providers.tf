@@ -17,4 +17,11 @@ terraform {
   required_version = "~> 1.5.7"
 }
 
-provider "aws" {}
+provider "aws" {
+  # Expects the following environment variables:
+  # - AWS_ACCESS_KEY_ID
+  # - AWS_SECRET_ACCESS_KEY
+  # - AWS_REGION
+}
+
+data "aws_region" "current" {}

@@ -70,18 +70,23 @@ Go to `IAM -> Users -> [your new user] -> Permissions` and add the following man
 
 ### Terraform project
 
-Set up a Terraform project in Terraform Cloud. Make sure to point the VCS trigger
-to the `/validator_notifier/terraform` directory.
+Set up a Terraform project in Terraform Cloud called `validator-notifier`. Configure the source repository.
+Make sure to point the VCS trigger to the `/validator_notifier/terraform` directory.
 
-Add the following variables (note that some of them need to be of type
-`env` and some of type `terraform`):
+Add the following variables (note that some of them need to be of type `env` and some of type `terraform`):
 
-* `AWS_ACCESS_KEY_ID` - user your IAM user ID (env var)
-* `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key (env var)
-* `AWS_REGION` - where you want the Lambda function deployed (env var)
-* `rsa_private_key` - the RSA key generated earlier (terraform var)
-* `recipients` - comma-separated list of emails (terraform var)
-* `authorization_token` - a secret that has to be passed as bearer token (terraform var)
+Env vars:
+
+* `AWS_ACCESS_KEY_ID` - user your IAM user ID
+* `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key
+* `AWS_REGION` - where you want the Lambda function deployed
+
+Terraform vars:
+
+* `rsa_private_key` - the RSA key generated earlier
+* `recipients` - comma-separated list of emails
+* `authorization_token` - a secret that has to be passed as bearer token
+* `codebuild_github_repo` - URL of the source GitHub repository for AWS CodeBuild. It should end with '.git'
 
 Create a _run_.
 
@@ -129,6 +134,8 @@ Run tests
 pytest
 ```
 
+## Building and deploying - manual way
+
 To manually build the image and upload it to the container registry (assuming it has been created):
 
 ```
@@ -141,6 +148,8 @@ docker build --platform linux/amd64 -t validator-notifier:latest .
 docker tag validator-notifier:latest ${REPOSITORY}:latest
 docker push ${REPOSITORY}:latest
 ```
+
+Then trigger a build in Terraform Cloud.
 
 ## Reading
 
