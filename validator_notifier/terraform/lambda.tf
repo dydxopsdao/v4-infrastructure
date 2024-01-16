@@ -65,6 +65,10 @@ data "external" "build_image_with_codebuild" {
   # BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
   program = ["bash", "${path.module}/build-image-with-codebuild.sh"]
 
+  query = {
+    region = data.aws_region.current.name
+  }
+
   depends_on = [aws_codebuild_project.validator_notifier]
 }
 
