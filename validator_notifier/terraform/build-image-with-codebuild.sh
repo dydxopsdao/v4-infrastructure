@@ -8,11 +8,12 @@ set -e
 # and escaped for consumption by the shell.
 eval "$(jq -r '@sh "REGION=\(.region)"')"
 
-BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
+# Trigger a build and wait for it to complete
+BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq -r '.build.id')
 TIMEOUT=300
 while [ "$BUILD_PHASE" != '"COMPLETED"' ] && [ $TIMEOUT -gt 0 ]; do
   sleep 5
-  BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
+  BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq -r '.builds[0].currentPhase')
   TIMEOUT=$((TIMEOUT-5))
 done
 
