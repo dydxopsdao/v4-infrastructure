@@ -131,23 +131,22 @@ Run tests
 pytest
 ```
 
-## Building and deploying - manual way
+## Optional: building locally
 
 To manually build the image and upload it to the container registry (assuming it has been created):
 
 ```
 export AWS_ACCESS_KEY_ID=<terraformer credential>
 export AWS_SECRET_ACCESS_KEY=<terraformer credential>
+export AWS_ACCOUNT_ID=791066989954
 export REGION=ap-northeast-1
-export REPOSITORY=791066989954.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
+export REPOSITORY=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
 cd ./src
 docker build --platform linux/amd64 -t validator-notifier:latest .
 docker tag validator-notifier:latest ${REPOSITORY}:latest
 docker push ${REPOSITORY}:latest
 ```
-
-Then trigger a build in Terraform Cloud.
 
 ## Reading
 
