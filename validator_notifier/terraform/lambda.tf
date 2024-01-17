@@ -58,6 +58,12 @@ locals {
   lambda_function_name = "notify_validators"
 }
 
+
+
+
+
+# DOES THIS HAPPEN ON PLAN OR ON APPLY?!?!
+
 data "external" "build_image_with_codebuild" {
   # TODO: Trigger a build and wait until it's finished. Something along the lines of:
   # BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
