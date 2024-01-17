@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
-from .mailing import Mailer
+from mailing import Mailer
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
