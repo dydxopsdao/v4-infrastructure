@@ -6,7 +6,7 @@ The input should be a JSON with the following format:
 
 ```
 {
-    "subject": "The world on you depends!",
+    "subject": "The world on you depends",
     "content": "Please lorem your ipsums by tomorrow."
 }
 ```
