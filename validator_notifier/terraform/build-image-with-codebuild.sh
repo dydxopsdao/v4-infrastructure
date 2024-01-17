@@ -9,7 +9,14 @@ set -e
 eval "$(jq -r '@sh "REGION=\(.region)"')"
 
 BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
-BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
+TIMEOUT=300
+while [ "$BUILD_PHASE" != '"COMPLETED"' ] && [ $TIMEOUT -gt 0 ]; do
+  sleep 5
+  BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
+  TIMEOUT=$((TIMEOUT-5))
+done
+
+"$BUILD_PHASE" != '"COMPLETED"' && exit 1
 
 # Safely produce a JSON object containing the result value.
 # jq will ensure that the value is properly quoted
