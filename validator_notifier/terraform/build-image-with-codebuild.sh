@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script is used to trigger a CodeBuild build and wait for it to complete.
+# It is invoked by the Terraform's "external" data source.
+# See: https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external
+
 # Exit if any of the intermediate steps fail
 set -e
 

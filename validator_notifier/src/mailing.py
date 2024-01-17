@@ -28,7 +28,6 @@ class Mailer:
         delay=DELAY_PER_EMAIL,
     ):
         try:
-            # Provide the contents of the email.
             # Docs:
             # - https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ses/client/send_raw_email.html
             # - https://docs.aws.amazon.com/ses/latest/dg/send-email-raw.html
