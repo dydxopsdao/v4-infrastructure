@@ -6,7 +6,7 @@ The input should be a JSON with the following format:
 
 ```
 {
-    "subject": "The world depends on you!",
+    "subject": "The world on you depends!",
     "content": "Please lorem your ipsums by tomorrow."
 }
 ```
@@ -55,7 +55,7 @@ openssl rsa -in rsa-private.pem -outform PEM -pubout -out rsa-public.pem
 
 ### IAM user
 
-Manually prepare an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
+Manually create an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
 Call it e.g.: `terraformer`. Go to:
 `IAM -> Users -> [your new user] -> Permissions -> Add permissions -> Attach policies directly`
 and add the following managed policies:
@@ -74,8 +74,8 @@ Add the following variables (note that some of them need to be of type `env` and
 
 Env vars:
 
-* `AWS_ACCESS_KEY_ID` - user your IAM user ID
-* `AWS_SECRET_ACCESS_KEY` - user your IAM user secret key
+* `AWS_ACCESS_KEY_ID` - your IAM user (e.g. terraformer)'s ID
+* `AWS_SECRET_ACCESS_KEY` - your IAM user (e.g. terraformer)'s secret key
 * `AWS_REGION` - where you want the Lambda function deployed
 
 Terraform vars:
@@ -158,11 +158,5 @@ Then trigger a build in Terraform Cloud.
 
 ## TODO
 
-* Build Docker image via Terraform. Currently it's being built manually and pushed to ECR before applying Terraform.
 * Authenticate via asymmetric cryptography - custom private key passed for the HTTPS call. Use API gateway if needed. Ditch the bearer token. Security!
 * Use AWS KMS instead of plain env var to store the private key. Security!
-* Try to encapsulate image building in Terraform via CLI commands in data.external. Try:
-    ```
-    BUILD_ID=$(aws codebuild start-build --region=$REGION --project-name=validator-notifier | jq '.build.id')
-    BUILD_PHASE=$(aws codebuild batch-get-builds --region=$REGION --ids=$BUILD_ID | jq '.builds[0].currentPhase')
-    ```
