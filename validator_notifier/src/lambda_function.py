@@ -35,14 +35,17 @@ def run(event, context):
         sender=os.environ["SENDER"],
         region=os.environ["EMAIL_AWS_REGION"],
     )
-    for recipient in os.environ["RECIPIENTS"].split(","):
-        logger.info(f"Sending to: {recipient}")
+    for recipient_raw in os.environ["RECIPIENTS"].split(","):
+        recipient_cleaned = recipient_raw.strip()
+        if not recipient_cleaned:
+            continue
+        logger.info(f"Sending to: {recipient_cleaned}")
         email_client.send(
             subject=subject,
             content=decorated_content,
             signed_message=signed_message,
             signature=signature,
-            recipient=recipient.strip(),
+            recipient=recipient_cleaned,
         )
 
     response = {
