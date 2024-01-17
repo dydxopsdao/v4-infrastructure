@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 import pytest
 
-import src.lambda_function as lambda_function
+from src import lambda_function
 
 
 RSA_PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
