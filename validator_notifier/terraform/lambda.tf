@@ -58,18 +58,6 @@ locals {
   lambda_function_name = "notify_validators"
 }
 
-# Trigger a build and wait until it's finished.
-# It's a workaround for the lack of support for CodeBuild in Terraform.
-data "external" "build_image_with_codebuild" {
-  program = ["bash", "${path.module}/build-image-with-codebuild.sh"]
-
-  query = {
-    region = data.aws_region.current.name
-  }
-
-  depends_on = [aws_codebuild_project.validator_notifier]
-}
-
 resource "aws_lambda_function" "notify_validators" {
   function_name    = local.lambda_function_name
   package_type     = "Image"

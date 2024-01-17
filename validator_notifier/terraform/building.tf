@@ -47,7 +47,7 @@ resource "aws_iam_role_policy_attachment" "builder_permissions" {
   policy_arn = aws_iam_policy.builder_permissions.arn
 }
 
-# === Image creation ===
+# === Image building ===
 
 resource "aws_ecr_repository" "validator_notifier" {
   name = "validator-notifier"
@@ -96,6 +96,9 @@ resource "aws_codebuild_project" "validator_notifier" {
       EOF
   }
 
+  # See:
+  # - https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html
+  # - https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-available.html
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
     type                        = "LINUX_CONTAINER"
@@ -114,4 +117,16 @@ resource "aws_codebuild_project" "validator_notifier" {
       status = "DISABLED"
     }
   }
+}
+
+# Trigger a build and wait until it's finished.
+# It's a workaround for the lack of support for CodeBuild in Terraform.
+data "external" "build_image_with_codebuild" {
+  program = ["bash", "${path.module}/build-image-with-codebuild.sh"]
+
+  query = {
+    region = data.aws_region.current.name
+  }
+
+  depends_on = [aws_codebuild_project.validator_notifier]
 }
