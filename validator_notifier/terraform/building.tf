@@ -95,15 +95,6 @@ resource "aws_codebuild_project" "validator_notifier" {
             - docker push $REPOSITORY_URI:$IMAGE_TAG
       EOF
   }
-            # - echo Checking if the Lambda function exists...
-            # - >
-            #   aws lambda get-function --region=${data.aws_region.current.name} --function-name=${local.lambda_function_name}
-            #   && echo Updating the Lambda function...
-            #   && aws lambda update-function-code
-            #   --region ${data.aws_region.current.name}
-            #   --function-name ${local.lambda_function_name}
-            #   --image-uri $REPOSITORY_URI:latest
-            #   --publish
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
@@ -111,14 +102,6 @@ resource "aws_codebuild_project" "validator_notifier" {
     image                       = "aws/codebuild/amazonlinux2-x86_64-standard:5.0"
     image_pull_credentials_type = "CODEBUILD"
     privileged_mode             = true
-
-    # dynamic "environment_variable" {
-    #   for_each = var.environment_variables
-    #   content {
-    #     name  = environment_variable.key
-    #     value = environment_variable.value
-    #   }
-    # }
   }
 
   logs_config {
