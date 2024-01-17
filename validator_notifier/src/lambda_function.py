@@ -42,7 +42,7 @@ def run(event, context):
             content=decorated_content,
             signed_message=signed_message,
             signature=signature,
-            recipient=recipient,
+            recipient=recipient.strip(),
         )
 
     response = {
