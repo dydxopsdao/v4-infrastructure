@@ -22,7 +22,7 @@ class Mailer:
         self,
         subject: str,
         content: str,
-        signed_message: bytes,
+        unified_message: bytes,
         signature: bytes,
         recipient: str,
         delay=DELAY_PER_EMAIL,
@@ -40,7 +40,7 @@ class Mailer:
             textpart = MIMEText(content.encode("utf-8"), "plain", "UTF-8")
             msg.attach(textpart)
 
-            attachment_1 = MIMEApplication(signed_message)
+            attachment_1 = MIMEApplication(unified_message)
             attachment_1.add_header(
                 "Content-Disposition",
                 "attachment",

@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 
 from mailing import Mailer
+from signing import Signer
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -29,7 +30,7 @@ def run(event, context):
         return {"statusCode": 403}
 
     try:
-        subject, signed_message, decorated_content = validate_input(event)
+        subject, unified_message, decorated_content = validate_input(event)
     except MessageTooLongError as e:
         logger.info("Message is too long")
         return {
@@ -42,12 +43,24 @@ def run(event, context):
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
-    signature = sign_message(private_key, signed_message)
+    signature = sign_message(private_key, unified_message)
+    signature_base64 = base64.b64encode(signature).decode("ascii")
 
-    send_emails(subject, decorated_content, signed_message, signature)
+    send_emails(subject, decorated_content, unified_message, signature)
+
+    # --- TEMP ---
+    print("Checks...")
+    kms_signer = Signer(
+        region=os.environ["EMAIL_AWS_REGION"],
+        key_id=os.environ["KMS_SIGNING_KEY_ID"],
+    )
+    kms_signature = kms_signer.sign(unified_message)
+    print(f"KMS signature: {kms_signature}")
+    print(f"Python signature: {signature_base64}")
+    # --- TEMP ---
 
     response = {
-        "signature_base64": base64.b64encode(signature).decode("ascii"),
+        "signature_base64": signature_base64,
     }
     return json.dumps(response)
 
@@ -71,13 +84,13 @@ def validate_input(event):
     content = body["content"]
     logger.info(f"Subject: {subject}; Content: {content}")
 
-    signed_message = f"{subject}\n\n{content}".encode("utf-8")
-    if len(signed_message) > MAX_MESSAGE_LENGTH:
+    unified_message = f"{subject}\n\n{content}".encode("utf-8")
+    if len(unified_message) > MAX_MESSAGE_LENGTH:
         raise MessageTooLongError()
 
     decorated_content = decorate_content(content)
 
-    return subject, signed_message, decorated_content
+    return subject, unified_message, decorated_content
 
 
 def decorate_content(original_message: str) -> str:
@@ -119,7 +132,7 @@ def sign_message(
 
 
 def send_emails(
-    subject: str, decorated_content: str, signed_message: bytes, signature: bytes
+    subject: str, decorated_content: str, unified_message: bytes, signature: bytes
 ):
     email_client = Mailer(
         sender=os.environ["SENDER"],
@@ -133,7 +146,7 @@ def send_emails(
         email_client.send(
             subject=subject,
             content=decorated_content,
-            signed_message=signed_message,
+            unified_message=unified_message,
             signature=signature,
             recipient=recipient_cleaned,
         )

@@ -122,6 +122,7 @@ def test_success(monkeypatch, private_key, subject, content, expected_to_sign):
     os.environ["SENDER"] = "sender"
     os.environ["RECIPIENTS"] = "recipient1,recipient2"
     os.environ["AUTHORIZATION_TOKEN"] = "secret"
+    os.environ["KMS_SIGNING_KEY_ID"] = "secret"
     monkeypatch.setattr(boto3, "client", mocked_boto3_client)
 
     result_raw = lambda_function.run(
@@ -181,6 +182,12 @@ class MockedBoto3Client:
             RawMessage,
         )
         return {"MessageId": "test-message-id"}
+
+    def sign(self, KeyId, Message, MessageType, SigningAlgorithm):
+        print(
+            f"Signing message; key_id={KeyId} algorithm={SigningAlgorithm} message_length={len(Message)}"
+        )
+        return {"Signature": "test-signature"}
 
 
 def verify_signature(
