@@ -27,16 +27,10 @@ data "aws_iam_policy_document" "lambda_permissions" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-    ]
-    resources = ["arn:aws:logs:*:*:*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
+      "kms:Sign",
       "ses:SendRawEmail",
     ]
-    resources = ["arn:aws:ses:*:*:*"]
+    resources = ["*"]
   }
 }
 
