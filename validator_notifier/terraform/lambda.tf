@@ -34,6 +34,7 @@ data "aws_iam_policy_document" "lambda_permissions" {
   }
 }
 
+
 resource "aws_iam_policy" "lambda_permissions" {
   name        = "lambda-permissions"
   path        = "/"
