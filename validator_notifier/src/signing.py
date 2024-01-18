@@ -11,7 +11,7 @@ class Signer:
         self.key_id = key_id
         self.algorithm = algorithm
 
-    def sign(self, message: str) -> str:
+    def sign(self, message: str) -> bytes:
         print(f"Signing message; key_id={self.key_id} algorithm={self.algorithm} message_length={len(message)}")
         try:
             # Docs:

@@ -56,7 +56,7 @@ def run(event, context):
     )
     kms_signature = kms_signer.sign(unified_message)
     print(f"KMS signature: {kms_signature}")
-    print(f"Python signature: {signature_base64}")
+    print(f"Python signature: {signature}")
     # --- TEMP ---
 
     response = {
