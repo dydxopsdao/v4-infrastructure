@@ -64,6 +64,7 @@ and add the following managed policies:
 * AWSLambda_FullAccess
 * IAMFullAccess
 * AWSCodeBuildAdminAccess
+* AWSKeyManagementServicePowerUser
 
 ### Terraform project
 
