@@ -11,7 +11,9 @@ The input should be a JSON with the following format:
 }
 ```
 
-The outgoing emails will include the required message, along with its RSA signature.
+The outgoing emails will include the required message, along with its signature.
+
+The signing key is RSA 4096 and the algorithm used is SHA-256 with the padding scheme PSS.
 
 ## Assumptions
 
@@ -85,6 +87,7 @@ Terraform vars:
 * `recipients` - comma-separated list of emails
 * `authorization_token` - a secret that has to be passed as bearer token
 * `codebuild_github_repo` - URL of the source GitHub repository for AWS CodeBuild. It should end with '.git'
+* `codebuild_github_branch` - Repository branch that should be used by CodeBuild
 
 Create a _run_.
 

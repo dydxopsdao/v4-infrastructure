@@ -14,6 +14,13 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+MAX_MESSAGE_LENGTH = 4096
+
+
+class MessageTooLongError(Exception):
+    pass
+
+
 def run(event, context):
     try:
         ensure_authentication(event)
@@ -22,31 +29,22 @@ def run(event, context):
         return {"statusCode": 403}
 
     try:
-        subject, signed_message, decorated_content = parse_input(event)
+        subject, signed_message, decorated_content = validate_input(event)
+    except MessageTooLongError as e:
+        logger.info("Message is too long")
+        return {
+            "statusCode": 400,
+            "body": f"Message is too long. Maximum length is {MAX_MESSAGE_LENGTH}.",
+        }
     except Exception as e:
-        logger.info(f"Input parsing failed: {e}")
+        logger.info(f"Input validation failed: {e}")
         return {"statusCode": 400}
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
     signature = sign_message(private_key, signed_message)
 
-    email_client = Mailer(
-        sender=os.environ["SENDER"],
-        region=os.environ["EMAIL_AWS_REGION"],
-    )
-    for recipient_raw in os.environ["RECIPIENTS"].split(","):
-        recipient_cleaned = recipient_raw.strip()
-        if not recipient_cleaned:
-            continue
-        logger.info(f"Sending to: {recipient_cleaned}")
-        email_client.send(
-            subject=subject,
-            content=decorated_content,
-            signed_message=signed_message,
-            signature=signature,
-            recipient=recipient_cleaned,
-        )
+    send_emails(subject, decorated_content, signed_message, signature)
 
     response = {
         "signature_base64": base64.b64encode(signature).decode("ascii"),
@@ -63,7 +61,7 @@ def ensure_authentication(event):
         raise Exception("Invalid Authorization header")
 
 
-def parse_input(event):
+def validate_input(event):
     body_string = (
         base64.b64decode(event["body"]) if event["isBase64Encoded"] else event["body"]
     )
@@ -74,6 +72,9 @@ def parse_input(event):
     logger.info(f"Subject: {subject}; Content: {content}")
 
     signed_message = f"{subject}\n\n{content}".encode("utf-8")
+    if len(signed_message) > MAX_MESSAGE_LENGTH:
+        raise MessageTooLongError()
+
     decorated_content = decorate_content(content)
 
     return subject, signed_message, decorated_content
@@ -115,3 +116,24 @@ def sign_message(
         hashes.SHA256(),
     )
     return signature
+
+
+def send_emails(
+    subject: str, decorated_content: str, signed_message: bytes, signature: bytes
+):
+    email_client = Mailer(
+        sender=os.environ["SENDER"],
+        region=os.environ["EMAIL_AWS_REGION"],
+    )
+    for recipient_raw in os.environ["RECIPIENTS"].split(","):
+        recipient_cleaned = recipient_raw.strip()
+        if not recipient_cleaned:
+            continue
+        logger.info(f"Sending to: {recipient_cleaned}")
+        email_client.send(
+            subject=subject,
+            content=decorated_content,
+            signed_message=signed_message,
+            signature=signature,
+            recipient=recipient_cleaned,
+        )
