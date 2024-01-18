@@ -3,5 +3,5 @@ output "lambda_endpoint" {
 }
 
 output "signing_key_public" {
-  value = aws_kms_public_key.signing_key.public_key_pem
+  value = data.aws_kms_public_key.signing_key.public_key_pem
 }
