@@ -66,7 +66,7 @@ resource "aws_codebuild_project" "validator_notifier" {
     type = "NO_ARTIFACTS"
   }
 
-  source_version = "validator-notifier" # Temporary! Later: "main"
+  source_version = var.codebuild_github_branch
   source {
     type            = "GITHUB"
     location        = var.codebuild_github_repo
