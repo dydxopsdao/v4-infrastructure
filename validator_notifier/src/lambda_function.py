@@ -43,24 +43,18 @@ def run(event, context):
 
     raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
     private_key = read_private_key(raw_private_key)
-    signature = sign_message(private_key, unified_message)
-    signature_base64 = base64.b64encode(signature).decode("ascii")
-
-    send_emails(subject, decorated_content, unified_message, signature)
-
-    # --- TEMP ---
-    print("Checks...")
+    local_signature = sign_message(private_key, unified_message)
     kms_signer = Signer(
         region=os.environ["EMAIL_AWS_REGION"],
         key_id=os.environ["KMS_SIGNING_KEY_ID"],
     )
     kms_signature = kms_signer.sign(unified_message)
-    print(f"KMS signature: {kms_signature}")
-    print(f"Python signature: {signature}")
-    # --- TEMP ---
+
+    send_emails(subject, decorated_content, unified_message, kms_signature)
 
     response = {
-        "signature_base64": signature_base64,
+        "local_signature_base64": base64.b64encode(local_signature).decode("ascii"),
+        "kms_signature_base64": base64.b64encode(kms_signature).decode("ascii"),
     }
     return json.dumps(response)
 
