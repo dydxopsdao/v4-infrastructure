@@ -11,7 +11,7 @@ SIGNING_ALGORITHM = "RSASSA_PSS_SHA_256"
 
 
 class Signer:
-    def __init__(self, region, key_id, algorithm=SIGNING_ALGORITHM, logger) -> None:
+    def __init__(self, region, key_id, logger, algorithm=SIGNING_ALGORITHM) -> None:
         self.client = boto3.client("kms", region_name=region)
         self.key_id = key_id
         self.algorithm = algorithm

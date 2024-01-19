@@ -47,6 +47,7 @@ def run(event, context):
     kms_signer = Signer(
         region=os.environ["EMAIL_AWS_REGION"],
         key_id=os.environ["KMS_SIGNING_KEY_ID"],
+        logger=logger,
     )
     kms_signature = kms_signer.sign(unified_message)
 
