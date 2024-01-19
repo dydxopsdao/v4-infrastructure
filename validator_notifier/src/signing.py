@@ -48,7 +48,7 @@ class Signer:
         message: bytes,
         public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey,
     ):
-        self.logger.info("Verifying message:", message)
+        self.logger.info("Verifying message:")
         self.logger.info(message)
         public_key.verify(
             signature,
