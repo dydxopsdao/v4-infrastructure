@@ -5,6 +5,7 @@ import cryptography
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 
 SIGNING_ALGORITHM = "RSASSA_PSS_SHA_256"
@@ -34,15 +35,15 @@ class Signer:
             self.logger.info("Signature created!")
 
             pub_response = self.client.get_public_key(KeyId=self.key_id)
-            self.verify_signature(
+            self.verify(
                 response["Signature"],
                 message,
-                pub_response["PublicKey"],
+                load_pem_public_key(pub_response["PublicKey"]),
             )
 
             return response["Signature"]
 
-    def verify_signature(
+    def verify(
         self,
         signature: bytes,
         message: bytes,
