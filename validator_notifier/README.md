@@ -116,6 +116,14 @@ with minimal permissions, say to list and invoke the function. An example IAM in
 }
 ```
 
+## Obtaining the public key
+
+After the signing key is created in KMS, you can obtain its public key by inspecting
+the Terraform Cloud's output entry `kms_key_id`.
+
+For manual steps using CLI see:
+https://aws.amazon.com/blogs/security/how-to-verify-aws-kms-asymmetric-key-signatures-locally-with-openssl/
+
 ## Testing
 
 Prepare environment

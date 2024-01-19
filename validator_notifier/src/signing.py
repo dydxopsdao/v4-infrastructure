@@ -7,7 +7,7 @@ import cryptography
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.hazmat.primitives.serialization import load_der_public_key
 
 
 SIGNING_ALGORITHM = "RSASSA_PSS_SHA_256"
@@ -44,7 +44,7 @@ class Signer:
         pub_response = self.client.get_public_key(KeyId=self.key_id)
         self.logger.info("Public key response:")
         self.logger.info(pub_response)
-        public_key=load_pem_public_key(f"-----BEGIN PUBLIC KEY-----\n{base64.b64encode(pub_response['PublicKey']).decode('ascii')}\n-----END PUBLIC KEY-----\n".encode('ascii'))
+        public_key=load_der_public_key(pub_response['PublicKey'])
         self.verify(
             signature,
             message,
@@ -66,7 +66,7 @@ class Signer:
             signature,
             message,
             padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
+                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.AUTO
             ),
             hashes.SHA256(),
         )

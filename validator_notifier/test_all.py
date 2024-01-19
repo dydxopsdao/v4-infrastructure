@@ -147,7 +147,7 @@ def test_success(monkeypatch, private_key, subject, content, expected_to_sign):
     print("Signature transformed:", base64.b64encode(signature).decode("ascii"))
     verify_signature(
         signature,
-        expected_to_sign,
+        expected_to_sign.encode("utf-8"),
         private_key.public_key(),
     )
 
@@ -192,15 +192,15 @@ class MockedBoto3Client:
 
 def verify_signature(
     signature: bytes,
-    message: str,
+    message: bytes,
     public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey,
 ):
     print("Message:", message.encode("utf-8"))
     public_key.verify(
         signature,
-        message.encode("utf-8"),
+        message,
         padding.PSS(
-            mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
+            mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.AUTO
         ),
         hashes.SHA256(),
     )
