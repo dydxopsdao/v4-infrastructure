@@ -68,7 +68,7 @@ def ensure_authentication(event):
         raise Exception("Invalid Authorization header")
 
 
-def validate_input(event):
+def validate_input(event) -> (str, bytes, str):
     body_string = (
         base64.b64decode(event["body"]) if event["isBase64Encoded"] else event["body"]
     )
