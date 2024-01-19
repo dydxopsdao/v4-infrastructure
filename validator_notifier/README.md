@@ -83,7 +83,6 @@ Env vars:
 
 Terraform vars:
 
-* `rsa_private_key` - the RSA key generated earlier
 * `recipients` - comma-separated list of emails
 * `authorization_token` - a secret that has to be passed as bearer token
 * `codebuild_github_repo` - URL of the source GitHub repository for AWS CodeBuild. It should end with '.git'

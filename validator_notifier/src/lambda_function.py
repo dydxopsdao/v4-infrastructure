@@ -3,11 +3,6 @@ import json
 import logging
 import os
 
-import cryptography
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
-
 from mailing import Mailer
 from signing import Signer
 
@@ -41,9 +36,6 @@ def run(event, context):
         logger.info(f"Input validation failed: {e}")
         return {"statusCode": 400}
 
-    raw_private_key = os.environ["RSA_PRIVATE_KEY"].encode("ascii")
-    private_key = read_private_key(raw_private_key)
-    local_signature = sign_message(private_key, unified_message)
     kms_signer = Signer(
         region=os.environ["EMAIL_AWS_REGION"],
         key_id=os.environ["KMS_SIGNING_KEY_ID"],
@@ -54,8 +46,7 @@ def run(event, context):
     send_emails(subject, decorated_content, unified_message, kms_signature)
 
     response = {
-        "local_signature_base64": base64.b64encode(local_signature).decode("ascii"),
-        "kms_signature_base64": base64.b64encode(kms_signature).decode("ascii"),
+        "signature_base64": base64.b64encode(kms_signature).decode("ascii"),
     }
     return json.dumps(response)
 
@@ -100,30 +91,6 @@ def decorate_content(original_message: str) -> str:
         "You should see: 'Verified OK'.\n"
     )
     return decorated_message
-
-
-def read_private_key(raw_key: str):
-    private_key = serialization.load_pem_private_key(
-        raw_key,
-        password=None,
-    )
-    return private_key
-
-
-# See: https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#signing
-def sign_message(
-    private_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey,
-    message: bytes,
-) -> bytes:
-    logger.info(f"Message to sign: '{message.decode('utf-8')}'")
-    signature = private_key.sign(
-        message,
-        padding.PSS(
-            mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
-        ),
-        hashes.SHA256(),
-    )
-    return signature
 
 
 def send_emails(

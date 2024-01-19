@@ -3,12 +3,6 @@ import base64
 import boto3
 from botocore.exceptions import ClientError
 
-import cryptography
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives.serialization import load_der_public_key
-
 
 SIGNING_ALGORITHM = "RSASSA_PSS_SHA_256"
 
@@ -22,7 +16,7 @@ class Signer:
 
     def sign(self, message: bytes) -> bytes:
         self.logger.info(f"Signing: key_id={self.key_id} algorithm={self.algorithm} message_length={len(message)}")
-        self.logger.info(f"Message ({type(message)}):")
+        self.logger.info(f"Message:")
         self.logger.info(message)
         try:
             # Docs:
@@ -40,40 +34,4 @@ class Signer:
         self.logger.info("Signature created:")
         self.logger.info(signature)
 
-        # --- debugging ---
-        pub_response = self.client.get_public_key(KeyId=self.key_id)
-        self.logger.info("Public key response:")
-        self.logger.info(pub_response)
-        public_key=load_der_public_key(pub_response['PublicKey'])
-        self.verify(
-            signature,
-            message,
-            public_key=public_key,
-        )
-        # --- debugging ---
-
         return signature
-
-    def verify(
-        self,
-        signature: bytes,
-        message: bytes,
-        public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey,
-    ):
-        self.logger.info("Verifying message:")
-        self.logger.info(message)
-        public_key.verify(
-            signature,
-            message,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.AUTO
-            ),
-            hashes.SHA256(),
-        )
-        self.logger.info("Public key:")
-        self.logger.info(
-            public_key.public_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo,
-            ).decode("ascii")
-        )

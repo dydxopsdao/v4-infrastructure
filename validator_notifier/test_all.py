@@ -68,43 +68,6 @@ z6WohhfweRlSiRSWJlsaBzHWvYm+fA==
 """
 
 
-def test_integrity():
-    message = "lorem"
-    print("Message:")
-    print(message)
-
-    prehashed = hashlib.sha256(message.encode("utf-8")).hexdigest()
-    print("Prehashed:")
-    print(prehashed)
-
-    private_key = serialization.load_pem_private_key(
-        RSA_PRIVATE_KEY.encode("ascii"),
-        password=None,
-    )
-
-    public_key = private_key.public_key()
-    print("Public key:")
-    print(
-        public_key.public_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PublicFormat.SubjectPublicKeyInfo,
-        ).decode("ascii")
-    )
-
-    signature = private_key.sign(
-        prehashed.encode("ascii"),
-        padding.PSS(
-            mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
-        ),
-        hashes.SHA256(),
-    )
-    print("Signature raw:")
-    print(signature)
-
-    print("Signature base64:")
-    print(base64.b64encode(signature))
-
-
 @pytest.mark.parametrize(
     "subject,content,expected_to_sign",
     [
@@ -113,11 +76,10 @@ def test_integrity():
         ("o\rmg!", "\rlorem\r\n", "o\rmg!\n\n\rlorem\r\n"),
     ],
 )
-def test_success(monkeypatch, private_key, subject, content, expected_to_sign):
+def test_success(monkeypatch, subject, content, expected_to_sign):
     def mocked_boto3_client(*args, **kwargs):
         return MockedBoto3Client()
 
-    os.environ["RSA_PRIVATE_KEY"] = RSA_PRIVATE_KEY
     os.environ["EMAIL_AWS_REGION"] = "region"
     os.environ["SENDER"] = "sender"
     os.environ["RECIPIENTS"] = "recipient1,recipient2"
@@ -143,12 +105,11 @@ def test_success(monkeypatch, private_key, subject, content, expected_to_sign):
 
     result_json = json.loads(result_raw)
     print("Result:", result_json)
-    signature = base64.b64decode(result_json["local_signature_base64"])
+    signature = base64.b64decode(result_json["signature_base64"])
     print("Signature transformed:", base64.b64encode(signature).decode("ascii"))
     verify_signature(
         signature,
         expected_to_sign.encode("utf-8"),
-        private_key.public_key(),
     )
 
 
@@ -161,14 +122,6 @@ def test_forbidden():
         None,
     )
     assert result == {"statusCode": 403}
-
-
-@pytest.fixture
-def private_key():
-    return serialization.load_pem_private_key(
-        RSA_PRIVATE_KEY.encode("ascii"),
-        password=None,
-    )
 
 
 class MockedBoto3Client:
@@ -187,21 +140,34 @@ class MockedBoto3Client:
         print(
             f"Signing message; key_id={KeyId} algorithm={SigningAlgorithm} message_length={len(Message)}"
         )
-        return {"Signature": b"test-signature"}
+        # See: https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/#signing
+        signature = load_private_key().sign(
+            Message,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256(),
+        )
+        return {"Signature": signature}
+
+
+def load_private_key():
+    return serialization.load_pem_private_key(
+        RSA_PRIVATE_KEY.encode("ascii"),
+        password=None,
+    )
 
 
 def verify_signature(
     signature: bytes,
     message: bytes,
-    public_key: cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey,
 ):
-    print("Message:", message.encode("utf-8"))
+    print("Message:", message)
+    public_key = load_private_key().public_key()
     public_key.verify(
         signature,
         message,
-        padding.PSS(
-            mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.AUTO
-        ),
+        padding.PSS(mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.AUTO),
         hashes.SHA256(),
     )
     print("Public key:")
