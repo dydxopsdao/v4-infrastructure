@@ -163,10 +163,8 @@ docker push ${REPOSITORY}:latest
 
 * https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html
 * https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function
-* https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/
 * https://rietta.com/blog/openssl-generating-rsa-key-from-command/
 
 ## TODO
 
 * Authenticate via asymmetric cryptography - custom private key passed for the HTTPS call. Use API gateway if needed. Ditch the bearer token. Security!
-* Use AWS KMS instead of plain env var to store the private key. Security!
