@@ -35,6 +35,8 @@ class Signer:
             self.logger.info("Signature created!")
 
             pub_response = self.client.get_public_key(KeyId=self.key_id)
+            self.logger.info("Public key response:")
+            self.logger.info(pub_response)
             self.verify(
                 response["Signature"],
                 message,
