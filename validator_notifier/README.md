@@ -32,8 +32,7 @@ The endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
 To verify the signature created by the Lambda function run:
 
 ```
-base64 -d -i signature.base64 -o signature.raw
-openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.raw -sigopt rsa_padding_mode:pss message.txt
+openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.sig -sigopt rsa_padding_mode:pss message.txt
 ```
 
 ## Setup
@@ -141,29 +140,6 @@ Run tests
 # . ./python_venv/bin/activate
 pytest
 ```
-
-## Optional: building locally
-
-To manually build the image and upload it to the container registry (assuming it has been created):
-
-```
-export AWS_ACCESS_KEY_ID=<terraformer credential>
-export AWS_SECRET_ACCESS_KEY=<terraformer credential>
-export AWS_ACCOUNT_ID=791066989954
-export REGION=ap-northeast-1
-export REPOSITORY=$AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1.amazonaws.com/validator-notifier
-aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY
-cd ./src
-docker build --platform linux/amd64 -t validator-notifier:latest .
-docker tag validator-notifier:latest ${REPOSITORY}:latest
-docker push ${REPOSITORY}:latest
-```
-
-## Reading
-
-* https://docs.aws.amazon.com/lambda/latest/dg/getting-started.html
-* https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function
-* https://rietta.com/blog/openssl-generating-rsa-key-from-command/
 
 ## TODO
 

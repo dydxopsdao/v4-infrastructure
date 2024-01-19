@@ -51,7 +51,7 @@ class Mailer:
             attachment_2.add_header(
                 "Content-Disposition",
                 "attachment",
-                filename="signature.raw",
+                filename="signature.sig",
             )
 
             msg.attach(msg_body)
