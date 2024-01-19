@@ -142,8 +142,8 @@ def test_success(monkeypatch, private_key, subject, content, expected_to_sign):
     )
 
     result_json = json.loads(result_raw)
-    print("Signature in:", result_json["signature_base64"])
-    signature = base64.b64decode(result_json["signature_base64"])
+    print("Result:", result_json)
+    signature = base64.b64decode(result_json["local_signature_base64"])
     print("Signature transformed:", base64.b64encode(signature).decode("ascii"))
     verify_signature(
         signature,
@@ -187,7 +187,7 @@ class MockedBoto3Client:
         print(
             f"Signing message; key_id={KeyId} algorithm={SigningAlgorithm} message_length={len(Message)}"
         )
-        return {"Signature": "test-signature"}
+        return {"Signature": b"test-signature"}
 
 
 def verify_signature(

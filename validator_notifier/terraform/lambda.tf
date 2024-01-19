@@ -28,6 +28,7 @@ data "aws_iam_policy_document" "lambda_permissions" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
       "kms:Sign",
+      "kms:GetPublicKey",
       "ses:SendRawEmail",
     ]
     resources = ["*"]
