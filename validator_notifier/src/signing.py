@@ -37,10 +37,11 @@ class Signer:
             pub_response = self.client.get_public_key(KeyId=self.key_id)
             self.logger.info("Public key response:")
             self.logger.info(pub_response)
+            public_key=load_pem_public_key(f"-----BEGIN PUBLIC KEY-----\n{pub_response['PublicKey'].decode('ascii')}\n-----END PUBLIC KEY-----\n".encode('ascii'))
             self.verify(
                 response["Signature"],
                 message,
-                load_pem_public_key(pub_response["PublicKey"]),
+                public_key=public_key,
             )
 
             return response["Signature"]
