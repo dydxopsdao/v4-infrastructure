@@ -21,7 +21,9 @@ class Signer:
         self.logger = logger
 
     def sign(self, message: bytes) -> bytes:
-        self.logger.info(f"Signing message; key_id={self.key_id} algorithm={self.algorithm} message_length={len(message)}")
+        self.logger.info(f"Signing: key_id={self.key_id} algorithm={self.algorithm} message_length={len(message)}")
+        self.logger.info("Message:")
+        self.logger.info(message)
         try:
             # Docs:
             # - https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/kms/client/sign.html
@@ -31,22 +33,26 @@ class Signer:
                 MessageType="RAW",
                 SigningAlgorithm=self.algorithm,
             )
+            signature = response["Signature"]
         except ClientError as e:
             self.logger.info(e.response["Error"]["Message"])
-        else:
-            self.logger.info("Signature created!")
 
-            pub_response = self.client.get_public_key(KeyId=self.key_id)
-            self.logger.info("Public key response:")
-            self.logger.info(pub_response)
-            public_key=load_pem_public_key(f"-----BEGIN PUBLIC KEY-----\n{base64.b64encode(pub_response['PublicKey']).decode('ascii')}\n-----END PUBLIC KEY-----\n".encode('ascii'))
-            self.verify(
-                response["Signature"],
-                message,
-                public_key=public_key,
-            )
+        self.logger.info("Signature created:")
+        self.logger.info(signature)
 
-            return response["Signature"]
+        # --- debugging ---
+        pub_response = self.client.get_public_key(KeyId=self.key_id)
+        self.logger.info("Public key response:")
+        self.logger.info(pub_response)
+        public_key=load_pem_public_key(f"-----BEGIN PUBLIC KEY-----\n{base64.b64encode(pub_response['PublicKey']).decode('ascii')}\n-----END PUBLIC KEY-----\n".encode('ascii'))
+        self.verify(
+            signature,
+            message,
+            public_key=public_key,
+        )
+        # --- debugging ---
+
+        return signature
 
     def verify(
         self,
