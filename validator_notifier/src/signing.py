@@ -22,7 +22,7 @@ class Signer:
 
     def sign(self, message: bytes) -> bytes:
         self.logger.info(f"Signing: key_id={self.key_id} algorithm={self.algorithm} message_length={len(message)}")
-        self.logger.info("Message:")
+        self.logger.info(f"Message ({type(message)}):")
         self.logger.info(message)
         try:
             # Docs:
