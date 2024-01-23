@@ -29,6 +29,8 @@ curl -v <lambda-endpoint> -H 'Authorization: Bearer <secret>' -d '{"subject": "l
 
 The endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
 
+The combined length of subject and content must not exceed 4096 bytes.
+
 To verify the signature created by the Lambda function run:
 
 ```
