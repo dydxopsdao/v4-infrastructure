@@ -14,9 +14,10 @@ DELAY_PER_EMAIL = 0.08
 
 
 class Mailer:
-    def __init__(self, sender, region) -> None:
+    def __init__(self, sender, region, logger) -> None:
         self.client = boto3.client("ses", region_name=region)
         self.sender = sender
+        self.logger = logger
 
     def send(
         self,
@@ -66,9 +67,9 @@ class Mailer:
                 },
             )
         except ClientError as e:
-            print(e.response["Error"]["Message"])
+            self.logger.info(e.response["Error"]["Message"])
         else:
-            print(
+            self.logger.info(
                 f"Email sent! Message ID: {response['MessageId']}. Waiting {delay} seconds."
             )
             time.sleep(delay)

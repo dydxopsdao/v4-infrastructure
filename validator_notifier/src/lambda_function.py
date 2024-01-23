@@ -99,6 +99,7 @@ def send_emails(
     email_client = Mailer(
         sender=os.environ["SENDER"],
         region=os.environ["EMAIL_AWS_REGION"],
+        logger=logger,
     )
     for recipient_raw in os.environ["RECIPIENTS"].split(","):
         recipient_cleaned = recipient_raw.strip()
