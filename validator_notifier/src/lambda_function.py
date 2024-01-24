@@ -70,7 +70,7 @@ def decorate_content(original_message: str) -> str:
         "-----\n"
         "To verify the authenticity of this message:\n\n"
         "1) Download the two attached files - one with the message and one with the RSA signature.\n"
-        "2) Ensure that you have the dYdX Ops Services public key in `dydxops-pubkey.pem`.\n"
+        "2) Download the dYdX Ops Services public key from https://github.com/dydxopsdao/v4-infrastructure/blob/main/validator_notifier/dydxops-pubkey.pem to `dydxops-pubkey.pem`.\n"
         "3) Run:\n"
         "openssl dgst -sha256 -verify dydxops-pubkey.pem -signature signature.sig -sigopt rsa_padding_mode:pss message.txt\n\n"
         "You should see: 'Verified OK'.\n"
