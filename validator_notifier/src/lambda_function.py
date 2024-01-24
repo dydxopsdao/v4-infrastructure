@@ -19,12 +19,6 @@ class MessageTooLongError(Exception):
 
 def run(event, context):
     try:
-        ensure_authentication(event)
-    except Exception as e:
-        logger.info(f"Authentication failed: {e}")
-        return {"statusCode": 403}
-
-    try:
         subject, unified_message, decorated_content = validate_input(event)
     except MessageTooLongError as e:
         logger.info("Message is too long")
@@ -49,15 +43,6 @@ def run(event, context):
         "signature_base64": base64.b64encode(kms_signature).decode("ascii"),
     }
     return json.dumps(response)
-
-
-def ensure_authentication(event):
-    if "authorization" not in event["headers"]:
-        raise Exception("Missing Authorization header")
-    prefix_len = len("Bearer ")
-    token = event["headers"]["authorization"][prefix_len:]
-    if token != os.environ["AUTHORIZATION_TOKEN"]:
-        raise Exception("Invalid Authorization header")
 
 
 def validate_input(event) -> (str, bytes, str):

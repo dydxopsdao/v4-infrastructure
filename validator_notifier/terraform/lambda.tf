@@ -65,7 +65,6 @@ resource "aws_lambda_function" "notify_validators" {
       EMAIL_AWS_REGION    = data.aws_region.current.name
       SENDER              = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
       RECIPIENTS          = var.recipients
-      AUTHORIZATION_TOKEN = var.authorization_token
       KMS_SIGNING_KEY_ID  = aws_kms_key.signing_key.key_id
     }
   }
@@ -75,5 +74,5 @@ resource "aws_lambda_function" "notify_validators" {
 
 resource "aws_lambda_function_url" "notify_validators_url" {
   function_name      = aws_lambda_function.notify_validators.function_name
-  authorization_type = "NONE"
+  authorization_type = "AWS_IAM"
 }

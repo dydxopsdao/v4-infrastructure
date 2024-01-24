@@ -3,11 +3,6 @@ variable "recipients" {
   description = "Comma-separated list of recipient email addresses."
 }
 
-variable "authorization_token" {
-  type        = string
-  description = "A secret that has to be passed as bearer token."
-}
-
 variable "codebuild_github_repo" {
   type        = string
   description = "URL of the source GitHub repository for AWS CodeBuild. It should end with '.git'."

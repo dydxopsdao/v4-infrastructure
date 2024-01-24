@@ -10,7 +10,6 @@ def test_success():
     os.environ["EMAIL_AWS_REGION"] = "region"
     os.environ["SENDER"] = "sender"
     os.environ["RECIPIENTS"] = "recipient1,recipient2"
-    os.environ["AUTHORIZATION_TOKEN"] = "secret"
     os.environ["KMS_SIGNING_KEY_ID"] = "key-id"
 
     with mock.patch("boto3.client", MockedBoto3ClientFactory) as mocked_boto3_client:
@@ -42,17 +41,6 @@ def test_success():
         SigningAlgorithm="RSASSA_PSS_SHA_256",
     )
     assert mocked_boto3_client.instances[1].send_raw_email.call_count == 2
-
-
-def test_forbidden():
-    os.environ["AUTHORIZATION_TOKEN"] = "secret"
-    result = lambda_function.run(
-        {
-            "headers": {"authorization": "Bearer wrong"},
-        },
-        None,
-    )
-    assert result == {"statusCode": 403}
 
 
 class MockedBoto3ClientFactory:
