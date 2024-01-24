@@ -75,8 +75,9 @@ Env vars:
 
 Terraform vars:
 
+* `sender` - Sender name and/or address, e.g.: `Lorem <lorem@ipsum.dolor>`
 * `recipients` - comma-separated list of emails
-* `codebuild_github_repo` - URL of the source GitHub repository for AWS CodeBuild. It should end with '.git'
+* `codebuild_github_repo` - URL of the source GitHub repository for AWS CodeBuild. It should end with `.git`
 * `codebuild_github_branch` - Repository branch that should be used by CodeBuild
 
 Create a _run_.

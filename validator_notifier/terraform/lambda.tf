@@ -63,7 +63,7 @@ resource "aws_lambda_function" "notify_validators" {
   environment {
     variables = {
       EMAIL_AWS_REGION    = data.aws_region.current.name
-      SENDER              = "dYdX Ops Services <infrastructure@dydxopsservices.com>"
+      SENDER              = var.sender
       RECIPIENTS          = var.recipients
       KMS_SIGNING_KEY_ID  = aws_kms_key.signing_key.key_id
     }
