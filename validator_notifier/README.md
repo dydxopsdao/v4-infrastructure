@@ -23,13 +23,23 @@ The signing key is RSA 4096 and the algorithm used is SHA-256 with the padding s
 
 ## Usage
 
+The lambda function has to be invoked by an IAM user with the `lambda:InvokeFunctionUrl` permission in the project. This could be done via CLI, SDK, or the bare API. A convenient tool for CLI calls is `awscurl`. An example call (change the URL and region accordingly):
+
 ```
-curl -v <lambda-endpoint> -H 'Authorization: Bearer <secret>' -d '{"subject": "lorem", "content":"ipsum"}'
+ export AWS_ACCESS_KEY_ID=...
+ export AWS_SECRET_ACCESS_KEY=...
+awscurl https://l2ncnwgglvoevbu6hlnz7einoa0hnbvv.lambda-url.ap-northeast-1.on.aws/ --region ap-northeast-1 --service lambda -d '{"subject": "notifier test", "content":"Please lorem your ipsums."}'
 ```
 
-The endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
+For details about Lambda invocation and authentication methods see:
 
-The combined length of subject and content must not exceed 4096 bytes.
+* https://docs.aws.amazon.com/lambda/latest/dg/urls-invocation.html#urls-invocation-basics
+* https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html.
+
+
+The Lambda endpoint can be obtained from the Terraform output item: `lambda_endpoint`.
+
+The combined length of subject and content must not exceed 4096 bytes due to RSA limitations.
 
 To verify the signature created by the Lambda function run:
 
@@ -47,9 +57,11 @@ It is recommended to created a dedicated AWS account for the project. This is a 
 
 Set up Amazon SES by following their guide at: https://docs.aws.amazon.com/ses/latest/dg/setting-up.html#quick-start-verify-email-addresses .
 
-### IAM user
+### IAM users
 
-Manually create an AWS IAM user for deploying the solution, preferably in a dedicated AWS account.
+#### User for Terraform Cloud
+
+Manually create an AWS IAM user that Terraform Cloud will impersonate to deploy the solution. Preferably use a dedicated AWS account.
 Call it e.g.: `terraformer`. Go to:
 `IAM -> Users -> [your new user] -> Permissions -> Add permissions -> Attach policies directly`
 and add the following managed policies:
@@ -59,6 +71,29 @@ and add the following managed policies:
 * IAMFullAccess
 * AWSCodeBuildAdminAccess
 * AWSKeyManagementServicePowerUser
+
+#### Invoker user
+
+To authenticate to the Lambda function you need an IAM user with appropriate permissions.
+Create this user manually in the account where the function lives.
+A simple IAM inline policy could look like this:
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "lambda:InvokeFunctionUrl"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
 
 ### Terraform project
 
@@ -81,31 +116,6 @@ Terraform vars:
 * `codebuild_github_branch` - Repository branch that should be used by CodeBuild
 
 Create a _run_.
-
-### Optional: dedicated invoker user
-
-You will be able to call the Lambda function via HTTPS. However, if you want to invoke it via AWS internal systems
-(e.g. for programmatic use cases, without going through the public Internet), you can create a separate user
-with minimal permissions, say to list and invoke the function. An example IAM inline policy could look like this:
-
-```
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "lambda:ListFunctions",
-                "lambda:GetFunction",
-                "lambda:InvokeFunction"
-            ],
-            "Resource": [
-                "*"
-            ]
-        }
-    ]
-}
-```
 
 ## Obtaining the public key
 
@@ -133,7 +143,3 @@ Run tests
 # . ./python_venv/bin/activate
 pytest
 ```
-
-## TODO
-
-* Authenticate via asymmetric cryptography - custom private key passed for the HTTPS call. Use API gateway if needed. Ditch the bearer token. Security!
