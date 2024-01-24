@@ -18,6 +18,9 @@ class MessageTooLongError(Exception):
 
 
 def run(event, context):
+    caller_arn = event["requestContext"]["authorizer"]["iam"]["userArn"]
+    logger.info(f"Caller ARN: {caller_arn}")
+
     try:
         subject, unified_message, decorated_content = validate_input(event)
     except MessageTooLongError as e:
