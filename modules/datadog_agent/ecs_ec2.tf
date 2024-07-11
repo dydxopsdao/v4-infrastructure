@@ -59,11 +59,11 @@ locals {
       name      = "proc"
     },
     {
-      host_path = "/endpoint-checker/conf.d"
+      host_path = "/endpoint-checker/conf.d/metrics_example.d/"
       name      = "custom_metric_config"
     },
     {
-      host_path = "/endpoint-checker/checks.d"
+      host_path = "/endpoint-checker/checks.d/"
       name      = "checks_definitions"
     },
   ]
