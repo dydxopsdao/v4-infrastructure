@@ -54,6 +54,17 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
     Environment = var.environment
   }
 
+  # Copy the custom check definition for Endpoint Checker.
+  # These EC2-based directory structure will be referenced by the ECS task
+  # as volumes and serve to configure the Datadog Agent.
+  # For Datadog custom checks see: 
+  # - https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/
+  # - https://docs.datadoghq.com/developers/custom_checks/write_agent_check/
+  provisioner "file" {
+    source      = "./endpoint-checker"
+    destination = "/endpoint-checker"
+  }
+
   lifecycle {
     ignore_changes = [
       # Ignore changes to ami. These are updated frequently
