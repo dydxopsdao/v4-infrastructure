@@ -20,7 +20,7 @@ echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
 # Create directory structure for custom checks. The files will be created
 # by write_files in the cloudinit_config resource.
 mkdir -p /endpoint-checker/checks.d
-mkdir -p /endpoint-checker/conf.d/metrics_example.d
+mkdir -p /endpoint-checker/conf.d
 EOH
 }
 
@@ -41,8 +41,8 @@ data "cloudinit_config" "init" {
         },
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml")
-          path     = "/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml"
+          content  = filebase64("${path.module}/endpoint-checker/conf.d/metrics_example.yaml")
+          path     = "/endpoint-checker/conf.d/metrics_example.yaml"
         },
       ]
     })

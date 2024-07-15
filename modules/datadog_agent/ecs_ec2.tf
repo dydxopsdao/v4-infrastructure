@@ -24,7 +24,7 @@ locals {
           readOnly      = true
         },
         {
-          containerPath = "/etc/datadog-agent/conf.d/metrics_example.d",
+          containerPath = "/etc/datadog-agent/conf.d",
           sourceVolume  = "custom_metric_config",
           readOnly      = true
         },
@@ -59,7 +59,7 @@ locals {
       name      = "proc"
     },
     {
-      host_path = "/endpoint-checker/conf.d/metrics_example.d/"
+      host_path = "/endpoint-checker/conf.d/"
       name      = "custom_metric_config"
     },
     {
