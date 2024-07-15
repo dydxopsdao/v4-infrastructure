@@ -1,28 +1,30 @@
 import random
-import requests
+import urllib2
+
 from datadog_checks.base import AgentCheck
 
 __version__ = "1.0.0"
 
 
 class MyClass(AgentCheck):
-    def check(self, init_config, instance):
+    def check(self, instance):
         status = 0
+
         try:
-            response = requests.get(
+            response = urllib2.urlopen(
                 instance["openmetrics_endpoint"],
-                timeout=int(init_config.get("timeout", 5)),
+                timeout=10,
             )
-            if response.status_code == 200 and response.text:
+            if len(response.read()) > 0:
                 status = 1
         except Exception as e:
             print(f"Error ({instance['name']}): {str(e)}")
 
         self.gauge(
-            "dydxopsservices.validator_endpoint_active",
+            # "dydxopsservices.validator_endpoint_active",
+            "example_metric.gauge",
             status,
             tags=[
-                f"env:{init_config['env']}",
                 f"validator_name:{instance['name']}",
             ],
         )
