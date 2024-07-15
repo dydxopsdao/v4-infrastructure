@@ -1,5 +1,5 @@
 import random
-import urllib
+import urllib.request
 
 from datadog_checks.base import AgentCheck
 
@@ -11,7 +11,7 @@ class MyClass(AgentCheck):
         status = 0
 
         try:
-            response = urllib.urlopen(
+            response = urllib.request.urlopen(
                 instance["openmetrics_endpoint"],
                 timeout=10,
             )
