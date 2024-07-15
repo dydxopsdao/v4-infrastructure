@@ -37,7 +37,7 @@ data "cloudinit_config" "init" {
         },
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/conf.d/metrics_example.d/metrics_example.yaml")
+          content  = filebase64("${path.module}/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml")
           path     = "/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml"
         },
       ]
