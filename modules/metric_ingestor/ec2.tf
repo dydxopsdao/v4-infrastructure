@@ -96,8 +96,8 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
       ami,
     ]
     replace_triggered_by = [
-      # Changing the user_data will trigger a replace.
-      data.cloudinit_config.init.rendered
+      # Debug
+      null_resource.always_run,
     ]
   }
 }
