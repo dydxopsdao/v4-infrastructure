@@ -16,6 +16,11 @@ locals {
 
 # Register this EC2 instance to the ECS cluster
 echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
+
+# Create directory structure for custom checks. The files will be created
+# by write_files in the cloudinit_config resource.
+mkdir -p /endpoint-checker/checks.d
+mkdir -p /endpoint-checker/conf.d/metrics_example.d
 EOH
 }
 
@@ -24,11 +29,9 @@ data "cloudinit_config" "init" {
     content_type = "text/x-shellscript"
     content      = local.startup_script
   }
+
   part {
     content = yamlencode({
-      # bootcmd = [
-      #   local.startup_script,
-      # ]
       write_files = [
         {
           encoding = "b64"
