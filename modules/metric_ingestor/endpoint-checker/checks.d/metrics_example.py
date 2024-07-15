@@ -1,5 +1,5 @@
 import random
-import urllib2
+import urllib
 
 from datadog_checks.base import AgentCheck
 
@@ -11,7 +11,7 @@ class MyClass(AgentCheck):
         status = 0
 
         try:
-            response = urllib2.urlopen(
+            response = urllib.urlopen(
                 instance["openmetrics_endpoint"],
                 timeout=10,
             )
@@ -20,8 +20,8 @@ class MyClass(AgentCheck):
         except Exception as e:
             print(f"Error ({instance['name']}): {str(e)}")
 
+        # "dydxopsservices.validator_endpoint_active",
         self.gauge(
-            # "dydxopsservices.validator_endpoint_active",
             "example_metric.gauge",
             status,
             tags=[
