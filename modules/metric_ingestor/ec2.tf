@@ -14,6 +14,7 @@
 data "cloudinit_config" "init" {
   part {
     content = yamlencode({
+      content_type = "text/cloud-config"
       bootcmd = [
         "echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config",
         "mkdir -p /endpoint-checker/checks.d",
