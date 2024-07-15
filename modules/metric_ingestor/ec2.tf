@@ -65,12 +65,6 @@ data "aws_ami" "amazon_linux_ecs_ami" {
   }
 }
 
-resource "null_resource" "always_run" {
-  triggers = {
-    timestamp = "${timestamp()}"
-  }
-}
-
 # This is the EC2 instance for the metric ingestor used for ECS.
 resource "aws_instance" "metric_ingestor_ec2_instance" {
   ami = data.aws_ami.amazon_linux_ecs_ami.id
@@ -99,17 +93,12 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
     Environment = var.environment
   }
 
-  # lifecycle {
-  #   ignore_changes = [
-  #     # Ignore changes to ami. These are updated frequently
-  #     # and cause the EC2 instance to be destroyed with
-  #     # new deploys.
-  #     ami,
-  #   ]
-  # }
   lifecycle {
-    replace_triggered_by = [
-      null_resource.always_run
+    ignore_changes = [
+      # Ignore changes to ami. These are updated frequently
+      # and cause the EC2 instance to be destroyed with
+      # new deploys.
+      ami,
     ]
   }
 }
