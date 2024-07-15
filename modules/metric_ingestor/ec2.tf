@@ -41,7 +41,7 @@ data "cloudinit_config" "init" {
         },
         {
           encoding = "b64"
-          content  = yamlencode({ instances = var.validators })
+          content  = base64encode(yamlencode({ instances = var.validators }))
           path     = "/endpoint-checker/conf.d/metrics_example.yaml"
         },
       ]
