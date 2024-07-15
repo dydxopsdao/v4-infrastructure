@@ -1,18 +1,48 @@
-# This `user_data` local represents what is called "user_data" in ec2.
-# This poorly named variable is simply a script that is run on the
-# instance when it is started. In this case, we append the name of
-# the "ECS_CLUSTER" that the ec2 instance should join.
-# 
-# Additionally, we install "ec2-instance-connect" to enable EC2 Instance Connect.
-# This allows us to SSH into the host from the AWS Deveoper console.
-# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html
+# We use Cloud Init to provision the initial state of our EC2. See:
+# - https://cloudinit.readthedocs.io/
+# - https://stackoverflow.com/a/72179536
+# Our setup does 2 things:
+# 1) Script: append the name of the "ECS_CLUSTER" that the ec2 instance
+# should join.
+# 2) File provisioning: copy the custom check definition for Endpoint Checker.
+# These EC2-based directory structure will be referenced by the ECS task
+# as volumes and serve to configure the Datadog Agent.
+# For Datadog custom checks see: 
+# - https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/
+# - https://docs.datadoghq.com/developers/custom_checks/write_agent_check/
 locals {
-  user_data = <<EOH
+  startup_script = <<EOH
 #!/bin/bash
 
 # Register this EC2 instance to the ECS cluster
 echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
 EOH
+}
+
+data "cloudinit_config" "init" {
+  part {
+    content_type = "text/x-shellscript"
+    content      = local.startup_script
+  }
+  part {
+    content = yamlencode({
+      # bootcmd = [
+      #   local.startup_script,
+      # ]
+      write_files = [
+        {
+          encoding = "b64"
+          content  = filebase64("${path.module}/endpoint-checker/checks.d/metrics_example.py")
+          path     = "/endpoint-checker/checks.d/metrics_example.py"
+        },
+        {
+          encoding = "b64"
+          content  = filebase64("${path.module}/conf.d/metrics_example.d/metrics_example.yaml")
+          path     = "/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml"
+        },
+      ]
+    })
+  }
 }
 
 # This AMI is the ECS-optimized Amazon Linux AMI.
@@ -33,7 +63,7 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
   instance_type          = var.ec2_instance_type
   iam_instance_profile   = aws_iam_instance_profile.metric_ingestor_instance_profile.name
   vpc_security_group_ids = [aws_security_group.main.id]
-  user_data              = local.user_data
+  user_data              = data.cloudinit_config.init.rendered
   subnet_id              = aws_subnet.public.id
 
   root_block_device {
@@ -52,17 +82,6 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
   tags = {
     Name        = "${var.environment}-${var.name}-ec2"
     Environment = var.environment
-  }
-
-  # Copy the custom check definition for Endpoint Checker.
-  # These EC2-based directory structure will be referenced by the ECS task
-  # as volumes and serve to configure the Datadog Agent.
-  # For Datadog custom checks see: 
-  # - https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/
-  # - https://docs.datadoghq.com/developers/custom_checks/write_agent_check/
-  provisioner "file" {
-    source      = "./endpoint-checker"
-    destination = "/endpoint-checker"
   }
 
   lifecycle {
