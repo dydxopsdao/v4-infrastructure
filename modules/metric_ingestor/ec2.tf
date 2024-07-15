@@ -21,7 +21,6 @@ echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
 # by write_files in the cloudinit_config resource.
 mkdir -p /endpoint-checker/checks.d
 mkdir -p /endpoint-checker/conf.d
-
 EOH
 }
 
