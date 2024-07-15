@@ -41,36 +41,13 @@ data "cloudinit_config" "init" {
         },
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/endpoint-checker/conf.d/metrics_example.yaml")
+          content  = yamlencode({ instances = var.validators })
           path     = "/endpoint-checker/conf.d/metrics_example.yaml"
         },
       ]
     })
   }
 }
-
-  # part {
-  #   content = yamlencode({
-  #     content_type = "text/cloud-config"
-  #     bootcmd = [
-  #       "echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config",
-  #       "mkdir -p /endpoint-checker/checks.d",
-  #       "mkdir -p /endpoint-checker/conf.d/metrics_example.d",
-  #     ]
-  #     write_files = [
-  #       {
-  #         encoding = "b64"
-  #         content  = filebase64("${path.module}/endpoint-checker/checks.d/metrics_example.py")
-  #         path     = "/endpoint-checker/checks.d/metrics_example.py"
-  #       },
-  #       {
-  #         encoding = "b64"
-  #         content  = filebase64("${path.module}/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml")
-  #         path     = "/endpoint-checker/conf.d/metrics_example.d/metrics_example.yaml"
-  #       },
-  #     ]
-  #   })
-  # }
 
 # This AMI is the ECS-optimized Amazon Linux AMI.
 data "aws_ami" "amazon_linux_ecs_ami" {
@@ -117,6 +94,10 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
       # and cause the EC2 instance to be destroyed with
       # new deploys.
       ami,
+    ]
+    replace_triggered_by = [
+      # Changing the user_data will trigger a replace.
+      cloudinit_config.init.rendered
     ]
   }
 }
