@@ -41,8 +41,13 @@ data "cloudinit_config" "init" {
         },
         {
           encoding = "b64"
-          content  = base64encode(yamlencode({ instances = var.validators }))
-          path     = "/endpoint-checker/conf.d/metrics_example.yaml"
+          content = base64encode(yamlencode({
+            init_config = {
+              env = var.environment
+            }
+            instances = var.validators
+          }))
+          path = "/endpoint-checker/conf.d/metrics_example.yaml"
         },
       ]
     })
@@ -57,6 +62,12 @@ data "aws_ami" "amazon_linux_ecs_ami" {
   filter {
     name   = "name"
     values = ["amzn2-ami-ecs-inf-hvm-*-x86_64-ebs"]
+  }
+}
+
+resource "null_resource" "always_run" {
+  triggers = {
+    timestamp = "${timestamp()}"
   }
 }
 
@@ -88,12 +99,17 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
     Environment = var.environment
   }
 
+  # lifecycle {
+  #   ignore_changes = [
+  #     # Ignore changes to ami. These are updated frequently
+  #     # and cause the EC2 instance to be destroyed with
+  #     # new deploys.
+  #     ami,
+  #   ]
+  # }
   lifecycle {
-    ignore_changes = [
-      # Ignore changes to ami. These are updated frequently
-      # and cause the EC2 instance to be destroyed with
-      # new deploys.
-      ami,
+    replace_triggered_by = [
+      null_resource.always_run
     ]
   }
 }
