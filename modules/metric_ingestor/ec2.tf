@@ -95,10 +95,6 @@ resource "aws_instance" "metric_ingestor_ec2_instance" {
       # new deploys.
       ami,
     ]
-    replace_triggered_by = [
-      # Debug
-      null_resource.always_run,
-    ]
   }
 }
 
