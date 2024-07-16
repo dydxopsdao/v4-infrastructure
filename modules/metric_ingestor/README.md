@@ -24,8 +24,8 @@ validators = [
 }]
 ```
 
-Apart from the regular Datadog Agent operation, there is also a custom metric definition,
-realized via a custom agent check
+Apart from the regular Datadog Agent operation, there is also a custom agent check
 (see: https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/?tab=count).
+It emits a custom metric that shows validator endpoint reachability over time.
 The files describing the check are created on EC2 in the `/endpoint-checker` directory,
 whose subdirectories are then mounted as ECS volumes to be visible for Datadog Agent.
