@@ -48,11 +48,11 @@ data "cloudinit_config" "init" {
             init_config = {
               # (Datadog setting) seconds to wait between collecting metrics
               # for a single instance
-              min_collection_interval = 60
+              min_collection_interval = 600
 
               # Custom settings:
               env     = var.environment
-              timeout = 10 # seconds to wait for a response from each endpoint          
+              timeout = 15 # seconds to wait for a response from each endpoint          
             }
             instances = var.validators
           }))
