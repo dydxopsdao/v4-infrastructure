@@ -1,12 +1,14 @@
 # We use Cloud Init to provision the initial state of our EC2. See:
 # - https://cloudinit.readthedocs.io/
 # - https://stackoverflow.com/a/72179536
-# Our setup does 2 things:
+#
+# Our setup does the following:
 # 1) Script: append the name of the "ECS_CLUSTER" that the ec2 instance
 # should join.
 # 2) File provisioning: copy the custom check definition for Endpoint Checker.
 # These EC2-based directory structure will be referenced by the ECS task
 # as volumes and serve to configure the Datadog Agent.
+#
 # For Datadog custom checks see: 
 # - https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/
 # - https://docs.datadoghq.com/developers/custom_checks/write_agent_check/
