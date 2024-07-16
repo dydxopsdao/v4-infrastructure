@@ -7,7 +7,7 @@ import urllib.request
 from datadog_checks.base import AgentCheck
 
 __version__ = "1.0.0"
-METRIC_NAME = "dydxopsservices.validator_endpoint_active"
+METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
 
 
 class EndpointChecker(AgentCheck):
