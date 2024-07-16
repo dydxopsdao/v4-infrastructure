@@ -44,9 +44,13 @@ data "cloudinit_config" "init" {
           encoding = "b64"
           content = base64encode(yamlencode({
             init_config = {
-              env = var.environment
-              min_collection_interval = 60 # seconds to wait between collecting metrics for a single instance
-              timeout = 10 # seconds to wait for a response from each endpoint
+              # (Datadog setting) seconds to wait between collecting metrics
+              # for a single instance
+              min_collection_interval = 60
+
+              # Custom settings:
+              env     = var.environment
+              timeout = 10 # seconds to wait for a response from each endpoint          
             }
             instances = var.validators
           }))
