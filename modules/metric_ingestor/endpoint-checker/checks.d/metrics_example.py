@@ -13,7 +13,7 @@ class MyClass(AgentCheck):
         try:
             response = urllib.request.urlopen(
                 instance["openmetrics_endpoint"],
-                timeout=10,
+                timeout=int(self.init_config['timeout']),
             )
             if len(response.read()) > 0:
                 status = 1
@@ -25,6 +25,7 @@ class MyClass(AgentCheck):
             "example_metric.gauge",
             status,
             tags=[
+                f"env:{self.init_config['env']}",
                 f"validator_name:{instance['name']}",
             ],
         )

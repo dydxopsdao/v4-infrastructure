@@ -44,6 +44,7 @@ data "cloudinit_config" "init" {
           content = base64encode(yamlencode({
             init_config = {
               env = var.environment
+              timeout = 10 # seconds to wait for a response from each endpoint
             }
             instances = var.validators
           }))
