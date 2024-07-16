@@ -45,6 +45,7 @@ data "cloudinit_config" "init" {
           content = base64encode(yamlencode({
             init_config = {
               env = var.environment
+              min_collection_interval = 60 # seconds to wait between collecting metrics for a single instance
               timeout = 10 # seconds to wait for a response from each endpoint
             }
             instances = var.validators
