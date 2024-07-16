@@ -10,6 +10,7 @@
 # For Datadog custom checks see: 
 # - https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/
 # - https://docs.datadoghq.com/developers/custom_checks/write_agent_check/
+
 locals {
   startup_script = <<EOH
 #!/bin/bash
@@ -36,8 +37,8 @@ data "cloudinit_config" "init" {
       write_files = [
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/endpoint-checker/checks.d/metrics_example.py")
-          path     = "/endpoint-checker/checks.d/metrics_example.py"
+          content  = filebase64("${path.module}/endpoint_checker.py")
+          path     = "/endpoint-checker/checks.d/endpoint_checker.py"
         },
         {
           encoding = "b64"
@@ -48,7 +49,7 @@ data "cloudinit_config" "init" {
             }
             instances = var.validators
           }))
-          path = "/endpoint-checker/conf.d/metrics_example.yaml"
+          path = "/endpoint-checker/conf.d/endpoint_checker.yaml"
         },
       ]
     })
