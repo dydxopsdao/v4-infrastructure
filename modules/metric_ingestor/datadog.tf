@@ -8,25 +8,23 @@ module "datadog_agent" {
 
   # https://docs.datadoghq.com/containers/docker/prometheus/?tabs=standard#configuration
   docker_labels = {
-    "com.datadoghq.ad.instances" = jsonencode(
-      [
-        for validator in var.validators : {
-          "openmetrics_endpoint" : validator.openmetrics_endpoint,
-          "namespace" : var.metrics_namespace,
-          "metrics" : var.metrics,
-          "tags" : ["validator_name:${validator.name}", "is_full_node:false"],
-          "max_returned_metrics" : var.max_returned_metrics
-        }
-      ]
-    ),
+    "com.datadoghq.ad.instances" = jsonencode([
+      for validator in var.validators : {
+        openmetrics_endpoint = validator.openmetrics_endpoint
+        namespace            = var.metrics_namespace
+        metrics              = validator.metrics
+        tags                 = ["validator_address:${validator.address}", "is_full_node:false"]
+      }
+      if validator.openmetrics_endpoint != null
+    ])
     "com.datadoghq.ad.check_names" = jsonencode(
       [
-        for validator in var.validators : "openmetrics"
+        for validator in jsondecode(data.external.merged_validators.result.instances) : "openmetrics"
       ]
-    ),
+    )
     "com.datadoghq.ad.init_configs" = jsonencode(
       [
-        for validator in var.validators : {}
+        for validator in jsondecode(data.external.merged_validators.result.instances) : {}
       ]
     )
   }

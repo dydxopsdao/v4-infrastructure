@@ -24,6 +24,8 @@ echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
 # by write_files in the cloudinit_config resource.
 mkdir -p /endpoint-checker/checks.d
 mkdir -p /endpoint-checker/conf.d
+mkdir -p /voting-power/checks.d
+mkdir -p /voting-power/conf.d
 EOH
 }
 
@@ -37,6 +39,7 @@ data "cloudinit_config" "init" {
     content_type = "text/cloud-config"
     content = yamlencode({
       write_files = [
+        # Endpoint Checker
         {
           encoding = "b64"
           content  = filebase64("${path.module}/endpoint_checker.py")
@@ -58,6 +61,29 @@ data "cloudinit_config" "init" {
           }))
           path = "/endpoint-checker/conf.d/endpoint_checker.yaml"
         },
+
+        # Voting Power
+        {
+          encoding = "b64"
+          content  = filebase64("${path.module}/voting_power.py")
+          path     = "/voting-power/checks.d/voting_power.py"
+        },
+        {
+          encoding = "b64"
+          content = base64encode(yamlencode({
+            init_config = {
+              # Voting power is technically a custom checker with a single instance,
+              # so this collection interval controls how often all existing validators
+              # are checked.
+              min_collection_interval = 3600
+            }
+            instances = [
+              {
+                base_api_url = var.voting_power_node_base_url
+              }
+            ]
+          }))
+        }
       ]
     })
   }
