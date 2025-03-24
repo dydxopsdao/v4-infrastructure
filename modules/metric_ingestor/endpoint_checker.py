@@ -30,6 +30,6 @@ class EndpointChecker(AgentCheck):
             metric_value,
             tags=[
                 f"env:{self.init_config['env']}",
-                f"name:{instance['name']}",
+                f"validator_address:{instance['address']}",
             ],
         )

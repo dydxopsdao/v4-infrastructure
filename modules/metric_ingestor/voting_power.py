@@ -55,9 +55,9 @@ class VotingPowerCheck(AgentCheck):
             cumulative_sum += validator["percentage"]
             
             tags = [
+                f"env:{self.init_config['env']}",
                 f"validator_address:{validator['validator_address']}",
                 f"moniker:{validator['moniker']}",
-                f"env:{env}",
             ]
 
             # Submit metrics with all values

@@ -76,10 +76,12 @@ data "cloudinit_config" "init" {
               # so this collection interval controls how often all existing validators
               # are checked.
               min_collection_interval = 3600
+
+              # Custom settings:
+              env                     = var.environment
             }
             instances = [
               {
-                env          = var.environment
                 base_api_url = var.voting_power_node_base_url
               }
             ]
