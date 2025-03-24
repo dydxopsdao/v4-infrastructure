@@ -5,7 +5,7 @@
 # Our setup does the following:
 # 1) Script: append the name of the "ECS_CLUSTER" that the ec2 instance
 # should join.
-# 2) File provisioning: copy the custom check definition for Endpoint Checker.
+# 2) File provisioning: copy the custom check definitions.
 # These EC2-based directory structure will be referenced by the ECS task
 # as volumes and serve to configure the Datadog Agent.
 #
@@ -22,10 +22,8 @@ echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
 
 # Create directory structure for custom checks. The files will be created
 # by write_files in the cloudinit_config resource.
-mkdir -p /endpoint-checker/checks.d
-mkdir -p /endpoint-checker/conf.d
-mkdir -p /voting-power/checks.d
-mkdir -p /voting-power/conf.d
+mkdir -p /custom-metrics/checks.d
+mkdir -p /custom-metrics/conf.d
 EOH
 }
 
@@ -43,7 +41,7 @@ data "cloudinit_config" "init" {
         {
           encoding = "b64"
           content  = filebase64("${path.module}/endpoint_checker.py")
-          path     = "/endpoint-checker/checks.d/endpoint_checker.py"
+          path     = "/custom-metrics/checks.d/endpoint_checker.py"
         },
         {
           encoding = "b64"
@@ -59,14 +57,14 @@ data "cloudinit_config" "init" {
             }
             instances = var.validators
           }))
-          path = "/endpoint-checker/conf.d/endpoint_checker.yaml"
+          path = "/custom-metrics/conf.d/endpoint_checker.yaml"
         },
 
         # Voting Power
         {
           encoding = "b64"
           content  = filebase64("${path.module}/voting_power.py")
-          path     = "/voting-power/checks.d/voting_power.py"
+          path     = "/custom-metrics/checks.d/voting_power.py"
         },
         {
           encoding = "b64"
@@ -86,6 +84,7 @@ data "cloudinit_config" "init" {
               }
             ]
           }))
+          path = "/custom-metrics/conf.d/voting_power.yaml"
         }
       ]
     })

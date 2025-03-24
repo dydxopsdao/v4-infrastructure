@@ -14,18 +14,17 @@ Validators to scrape are configured via the `validators` variable, like this:
 ```hcl
 validators = [
 {
-  name = "Figment",
+  address = "dydxvaloper1000000001",
   openmetrics_endpoint = "https://validator.figment.com:1317"
 },
 {
-  name = "Frens",
-  // HTTP basic auth example
-  openmetrics_endpoint = "https://username:password@validator.frens.com:1317"
+  address = "dydxvaloper1000000002",
+  openmetrics_endpoint = "https://validator.frens.com:1317"
 }]
 ```
+(see: https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/?tab=count):
 
-Apart from the regular Datadog Agent operation, there is also a custom agent check
-(see: https://docs.datadoghq.com/metrics/custom_metrics/agent_metrics_submission/?tab=count).
-It emits a custom metric that shows validator endpoint reachability over time.
-The files describing the check are created on EC2 in the `/endpoint-checker` directory,
-whose subdirectories are then mounted as ECS volumes to be visible for Datadog Agent.
+Apart from the regular Datadog Agent operation, there are also a custom checks:
+
+- `endpoint_checker`: Emits a custom metric that shows validator endpoint reachability over time.
+- `voting_power`: Emits a custom metric that tracks the voting power of validators in the active set.
