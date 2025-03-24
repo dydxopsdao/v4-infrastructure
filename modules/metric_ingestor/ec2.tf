@@ -79,6 +79,7 @@ data "cloudinit_config" "init" {
             }
             instances = [
               {
+                env          = var.environment
                 base_api_url = var.voting_power_node_base_url
               }
             ]

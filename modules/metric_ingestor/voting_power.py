@@ -13,6 +13,7 @@ class VotingPowerCheck(AgentCheck):
     def check(self, instance):
         # Get configuration
         base_api_url = instance.get("base_api_url")
+        env = instance.get("env")
 
         # Fetch validator data
         response = requests.get(
@@ -56,6 +57,7 @@ class VotingPowerCheck(AgentCheck):
             tags = [
                 f"validator_address:{validator['validator_address']}",
                 f"moniker:{validator['moniker']}",
+                f"env:{env}",
             ]
 
             # Submit metrics with all values
