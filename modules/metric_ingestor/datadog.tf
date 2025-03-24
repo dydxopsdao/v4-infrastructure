@@ -19,12 +19,12 @@ module "datadog_agent" {
     ])
     "com.datadoghq.ad.check_names" = jsonencode(
       [
-        for validator in jsondecode(data.external.merged_validators.result.instances) : "openmetrics"
+        for validator in var.validators : "openmetrics"
       ]
-    )
+    ),
     "com.datadoghq.ad.init_configs" = jsonencode(
       [
-        for validator in jsondecode(data.external.merged_validators.result.instances) : {}
+        for validator in var.validators : {}
       ]
     )
   }
