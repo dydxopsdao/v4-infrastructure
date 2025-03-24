@@ -51,7 +51,7 @@ data "cloudinit_config" "init" {
             init_config = {
               # (Datadog setting) seconds to wait between collecting metrics
               # for a single instance
-              min_collection_interval = 600
+              min_collection_interval = 60
 
               # Custom settings:
               env     = var.environment
@@ -75,7 +75,7 @@ data "cloudinit_config" "init" {
               # Voting power is technically a custom checker with a single instance,
               # so this collection interval controls how often all existing validators
               # are checked.
-              min_collection_interval = 3600
+              min_collection_interval = 60
 
               # Custom settings:
               env                     = var.environment
