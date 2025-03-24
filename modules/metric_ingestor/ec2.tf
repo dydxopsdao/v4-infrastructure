@@ -21,7 +21,8 @@ locals {
 echo ECS_CLUSTER=${aws_ecs_cluster.main.name} >> /etc/ecs/ecs.config
 
 # Create directory structure for custom checks. The files will be created
-# by write_files in the cloudinit_config resource.
+# by write_files in the cloudinit_config resource. They will be later mounted
+# as /etc/datadog-agent/conf.d and /etc/datadog-agent/checks.d (see `ecs_ec2.tf`).
 mkdir -p /custom-metrics/checks.d
 mkdir -p /custom-metrics/conf.d
 EOH
