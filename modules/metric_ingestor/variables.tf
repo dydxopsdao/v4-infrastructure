@@ -51,7 +51,7 @@ variable "metrics_namespace" {
 
 variable "validators" {
   type = list(object({
-    name                 = string
+    address              = string
     openmetrics_endpoint = string
   }))
   description = "List of validators for which to collect metrics"
