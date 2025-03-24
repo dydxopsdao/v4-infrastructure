@@ -11,6 +11,8 @@ module "metric_ingestor" {
 
   validators = var.validators
 
+  voting_power_node_base_url = var.voting_power_node_base_url
+
   ec2_instance_type = var.ec2_instance_type
   cidr_vpc          = var.cidr_vpc
 }

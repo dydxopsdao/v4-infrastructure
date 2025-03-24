@@ -106,5 +106,4 @@ variable "root_block_device_delete_on_termination" {
 variable "voting_power_node_base_url" {
   type        = string
   description = "Base URL for the REST API of a full node that will be used to check voting power"
-  default     = "https://dydx-dao-api.polkachu.com"
 }
