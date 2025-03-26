@@ -31,5 +31,6 @@ class EndpointChecker(AgentCheck):
             tags=[
                 f"env:{self.init_config['env']}",
                 f"validator_address:{instance['address']}",
+                f"name:{instance['name']}",
             ],
         )
