@@ -50,8 +50,6 @@ class ValidatorMetricsCheck(AgentCheck):
         self.max_returned_metrics = self.init_config.get("max_returned_metrics")
 
     def check(self, instance):
-        return
-    
         self.log.info("Starting ValidatorMetricsCheck for %s", instance)
 
         # Get configuration from the instance
@@ -115,6 +113,7 @@ class ValidatorMetricsCheck(AgentCheck):
                         f"validator_address:{validator_address}",
                         f"validator_name:{validator_name}",
                         f"metric_source:{metric_source}",
+                        f"source:custom_check",
                         # f"is_full_node:false",
                         # Add dynamic tags from external source
                         # f"dynamic_tag:{dynamic_data['some_field']}"
