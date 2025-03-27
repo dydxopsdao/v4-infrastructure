@@ -50,6 +50,8 @@ class ValidatorMetricsCheck(AgentCheck):
         self.max_returned_metrics = self.init_config.get("max_returned_metrics")
 
     def check(self, instance):
+        self.log.info("Starting ValidatorMetricsCheck for %s", instance)
+
         # Get configuration from the instance
         endpoint_dydx = instance.get("endpoint_dydx")
         endpoint_slinky = instance.get("endpoint_slinky")
@@ -119,6 +121,12 @@ class ValidatorMetricsCheck(AgentCheck):
         except Exception as e:
             self.log.error(f"Error collecting metrics from {endpoint}: {str(e)}")
             raise
+        finally:
+            self.log.info(
+                "Finished ValidatorMetricsCheck for %s with %d metrics",
+                endpoint,
+                metric_counter,
+            )
 
     # def get_external_data(self, validator_address):
     #     """
