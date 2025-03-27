@@ -124,6 +124,7 @@ class ValidatorMetricsCheck(AgentCheck):
 
                     # Submit the metric with the appropriate type
                     if metric_type == "counter":
+                        self.log.info("Counter metric: %s %s %s", metric_name, metric_value, tags)
                         self.monotonic_count(metric_name, metric_value, tags=tags)
                     elif metric_type == "gauge":
                         self.gauge(metric_name, metric_value, tags=tags)
