@@ -10,7 +10,7 @@ module "datadog_agent" {
     "com.datadoghq.ad.instances" = jsonencode(
       [
         for validator in var.validators : {
-          "openmetrics_endpoint" : validator.openmetrics_endpoint,
+          "openmetrics_endpoint" : validator.endpoint_dydx,
           "namespace" : var.metrics_namespace,
           "metrics" : var.metrics,
           "tags" : [
