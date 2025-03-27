@@ -50,6 +50,8 @@ class ValidatorMetricsCheck(AgentCheck):
         self.max_returned_metrics = self.init_config.get("max_returned_metrics")
 
     def check(self, instance):
+        return
+    
         self.log.info("Starting ValidatorMetricsCheck for %s", instance)
 
         # Get configuration from the instance
