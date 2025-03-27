@@ -1,0 +1,252 @@
+[
+  {
+    "name": "keplr",
+    "openmetrics_endpoint": "http://178.63.93.249:1317/metrics?format=prometheus",
+    "address": "dydxvaloper1jvct2ck9hptwyzrr0umfvwxed7n9nhhj0wfmdf"
+  },
+  {
+    "name": "OKX Earn",
+    "openmetrics_endpoint": "http://52.198.204.107:1317/metrics?format=prometheus",
+    "address": "dydxvaloper19sk0mm69k5lgzwywzr9335pqj5mqcadnprclam"
+  },
+  {
+    "name": "kiln",
+    "openmetrics_endpoint": "https://lcd.validator-0.dydx.mainnet.kiln.fi/metrics?format=prometheus",
+    "address": "dydxvaloper1u9xeaqdjz3kky2ymdhdsn0ra5uy9tc3elj2jte"
+  },
+  {
+    "name": "cosmostation",
+    "openmetrics_endpoint": "http://167.179.68.73:16301/metrics?format=prometheus",
+    "address": "dydxvaloper1vl5ty47uwpfv4mcutwv4zam09mvvvdgy09n0l5"
+  },
+  {
+    "name": "polkachu.com",
+    "openmetrics_endpoint": "http://199.254.199.84:23861/metrics?format=prometheus",
+    "address": "dydxvaloper15xgxv2j45uc4er8z9tfz5m0f0e74ymv6xj9l9d"
+  },
+  {
+    "name": "Validation Cloud",
+    "openmetrics_endpoint": "http://57.181.41.168:26660/metrics?format=prometheus",
+    "address": "dydxvaloper14hz2lp7t8nrzl8esfg3hnj4efj0a53cdz0lzc9"
+  },
+  {
+    "name": "Imperator.co",
+    "openmetrics_endpoint": "http://199.254.199.244:2133/metrics?format=prometheus",
+    "address": "dydxvaloper1mwhwf9rqh64ktr8t8xnz37nhg7vvy42ec56jwe"
+  },
+  {
+    "name": "crosnest",
+    "openmetrics_endpoint": "http://199.254.199.10:27317/metrics?format=prometheus",
+    "address": "dydxvaloper1y6ncfxx8x9sqec97pehjw0k32slw63850ltjrn"
+  },
+  {
+    "name": "Chorus One",
+    "openmetrics_endpoint": "http://109.61.83.156:54718/metrics?format=prometheus",
+    "address": "dydxvaloper16pj5gljqnqs0ajxakccfjhu05yczp98724qpyn"
+  },
+  {
+    "name": "enigma",
+    "openmetrics_endpoint": "http://dydx-mainnet-lcd-val.enigma-validator.com:1493/metrics?format=prometheus",
+    "address": "dydxvaloper160n4rwm854v06ppkly2pt0zc9rpwlm5y2gjyqf"
+  },
+  {
+    "name": " Silk Nodes",
+    "openmetrics_endpoint": "http://43.224.35.64:1317/metrics?format=prometheus",
+    "address": "dydxvaloper1w44vfk3jzh69p7yawwqcaazuxz944ve95qpaf8"
+  },
+  {
+    "name": "Informal Systems",
+    "openmetrics_endpoint": "http://45.76.217.37:26660/metrics?format=prometheus",
+    "address": "dydxvaloper1x20lytyf6zkcrv5edpkfkn8sz578qg5se6j3y3"
+  },
+  {
+    "name": "slinky:Informal Systems",
+    "openmetrics_endpoint": "http://45.76.217.37:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1x20lytyf6zkcrv5edpkfkn8sz578qg5se6j3y3"
+  },
+  {
+    "name": "luganodes",
+    "openmetrics_endpoint": "http://dydx.validator.lgns.net:26660/metrics",
+    "address": "dydxvaloper1fs0t34g628xdqc8alfefnadq2x3qawt8g88mav"
+  },
+  {
+    "name": "    Kingnodes 👑",
+    "openmetrics_endpoint": "http://dydx-validator-metrics.kingnodes.net:23817/metrics?format=prometheus",
+    "address": "dydxvaloper1j4ljutnh66r55a29jydgca7pfmhd40e3nlcfa4"
+  },
+  {
+    "name": "PRO Delegators",
+    "openmetrics_endpoint": "https://node1.nuxian.ch/dydx_opsubdao_getmetrics?format=prometheus",
+    "address": "dydxvaloper1rqhxemv6e5x43uny8qdyq78zneuk49pe5gkltz"
+  },
+  {
+    "name": " Lavender.Five Nodes 🐝",
+    "openmetrics_endpoint": "http://51.210.223.84:23817/metrics?format=prometheus",
+    "address": "dydxvaloper140l6y2gp3gxvay6qtn70re7z2s0gn57zq7tkd8"
+  },
+  {
+    "name": "stakecito",
+    "openmetrics_endpoint": "http://109.123.229.133:1317/metrics?format=prometheus",
+    "address": "dydxvaloper1qe8uuf5x69c526h4nzxwv4ltftr73v7qvjutn2"
+  },
+  {
+    "name": "Nodes.Guru",
+    "openmetrics_endpoint": "http://198.13.44.107:6107/metrics?format=prometheus",
+    "address": "dydxvaloper19ylcqyrgsejrghujsf6utrgw69nukw9q0xe0sj"
+  },
+  {
+    "name": "provalidator",
+    "openmetrics_endpoint": "http://65.21.45.52:26660/metrics?format=prometheus",
+    "address": "dydxvaloper1a9lm6t9qalz53jrp0q6p50q2cxeqnwsh48g3tt"
+  },
+  {
+    "name": "Cosmic Validator | 100% Uptime",
+    "openmetrics_endpoint": "http://5.104.82.89:1317/metrics?format=prometheus",
+    "address": "dydxvaloper1k2mlt4akhddh8gz9r3227ruuaestgdczx60vqk"
+  },
+  {
+    "name": "slinky:keplr",
+    "openmetrics_endpoint": "http://178.63.93.249:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1jvct2ck9hptwyzrr0umfvwxed7n9nhhj0wfmdf"
+  },
+  {
+    "name": "slinky:OKX Earn",
+    "openmetrics_endpoint": "http://52.198.204.107:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper19sk0mm69k5lgzwywzr9335pqj5mqcadnprclam"
+  },
+  {
+    "name": "slinky:kiln",
+    "openmetrics_endpoint": "https://metrics.slinky-0.dydx.mainnet.kiln.fi/metrics",
+    "address": "slinky:dydxvaloper1u9xeaqdjz3kky2ymdhdsn0ra5uy9tc3elj2jte"
+  },
+  {
+    "name": "slinky:cosmostation",
+    "openmetrics_endpoint": "http://dydx-mainnet-slinky.cosmostation.io:16314/metrics?format=promethus",
+    "address": "slinky:dydxvaloper1vl5ty47uwpfv4mcutwv4zam09mvvvdgy09n0l5"
+  },
+  {
+    "name": "slinky:polkachu.com",
+    "openmetrics_endpoint": "http://199.254.199.84:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper15xgxv2j45uc4er8z9tfz5m0f0e74ymv6xj9l9d"
+  },
+  {
+    "name": "slinky:Validation Cloud",
+    "openmetrics_endpoint": "http://57.181.41.168:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper14hz2lp7t8nrzl8esfg3hnj4efj0a53cdz0lzc9"
+  },
+  {
+    "name": "slinky:figment",
+    "openmetrics_endpoint": "http://199.254.199.206:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1d9e68e7glce5pehh8qk0gcx9l06tjeh0naz0r0"
+  },
+  {
+    "name": "slinky:Imperator.co",
+    "openmetrics_endpoint": "http://199.254.199.244:6540/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1mwhwf9rqh64ktr8t8xnz37nhg7vvy42ec56jwe"
+  },
+  {
+    "name": "slinky:crosnest",
+    "openmetrics_endpoint": "http://109.123.230.250:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1y6ncfxx8x9sqec97pehjw0k32slw63850ltjrn"
+  },
+  {
+    "name": "slinky:Chorus One",
+    "openmetrics_endpoint": "http://109.61.83.156:54703/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper16pj5gljqnqs0ajxakccfjhu05yczp98724qpyn"
+  },
+  {
+    "name": "slinky:enigma",
+    "openmetrics_endpoint": "http://dydx-mainnet-slinky-val.enigma-validator.com:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper160n4rwm854v06ppkly2pt0zc9rpwlm5y2gjyqf"
+  },
+  {
+    "name": "slinky: Silk Nodes",
+    "openmetrics_endpoint": "http://43.224.35.64:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1w44vfk3jzh69p7yawwqcaazuxz944ve95qpaf8"
+  },
+  {
+    "name": "slinky:    Kingnodes 👑",
+    "openmetrics_endpoint": "https://skip-connect-dydx-metrics.kingnodes.com/",
+    "address": "slinky:dydxvaloper1j4ljutnh66r55a29jydgca7pfmhd40e3nlcfa4"
+  },
+  {
+    "name": "slinky:PRO Delegators",
+    "openmetrics_endpoint": "http://57.128.95.108:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1rqhxemv6e5x43uny8qdyq78zneuk49pe5gkltz"
+  },
+  {
+    "name": "slinky: Lavender.Five Nodes 🐝",
+    "openmetrics_endpoint": "http://51.210.223.84:23802/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper140l6y2gp3gxvay6qtn70re7z2s0gn57zq7tkd8"
+  },
+  {
+    "name": "slinky:stakecito",
+    "openmetrics_endpoint": "http://109.123.229.133:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1qe8uuf5x69c526h4nzxwv4ltftr73v7qvjutn2"
+  },
+  {
+    "name": "slinky:Nodes.Guru",
+    "openmetrics_endpoint": "http://198.13.44.107:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper19ylcqyrgsejrghujsf6utrgw69nukw9q0xe0sj"
+  },
+  {
+    "name": "slinky:meria",
+    "openmetrics_endpoint": "http://199.254.199.238:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1ml44cenapnawcn4xy3w36jce0rg78dm8ajvypn"
+  },
+  {
+    "name": "slinky:staked",
+    "openmetrics_endpoint": "http://slinky:@G2DV*ycEiwd4z4G@VtAWj6CA9i*96Zw@slinky-dydx-metrics.prod-utility-eks-eu-west-1.staked.cloud/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1dnm7e7jw9r48vsw4h6q5x0s0z0ugu0wqeqxyzt"
+  },
+  {
+    "name": "slinky:provalidator",
+    "openmetrics_endpoint": "http://65.21.45.52:8080/slinky/oracle/v1/prices",
+    "address": "slinky:dydxvaloper1a9lm6t9qalz53jrp0q6p50q2cxeqnwsh48g3tt"
+  },
+  {
+    "name": "slinky:kahuna",
+    "openmetrics_endpoint": "http://91.134.9.162:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper17r0cp9zrtkvzlz7a2r09gmdxwqfyje98kz6zs0"
+  },
+  {
+    "name": "slinky:infstones",
+    "openmetrics_endpoint": "http://15.235.224.169:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1mklf4k26dff0vueyqy2rvqhgjjkvdzam6p4na0"
+  },
+  {
+    "name": "slinky:nodeplus",
+    "openmetrics_endpoint": "http://5.104.81.60:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1mlzzahnvpc8cr7hk4l00ed5c3rvsjsd3aspyc7"
+  },
+  {
+    "name": "slinky:owallet",
+    "openmetrics_endpoint": "http://65.109.118.94:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1kuyezvy89hcr96q597ftuc4z03hrcftu5jy2pv"
+  },
+  {
+    "name": "owallet",
+    "openmetrics_endpoint": "http://65.109.118.94:23861/metrics?format=prometheus",
+    "address": "dydxvaloper1kuyezvy89hcr96q597ftuc4z03hrcftu5jy2pv"
+  },
+  {
+    "name": "slinky:nansen",
+    "openmetrics_endpoint": "http://23.81.44.98:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper1c9ye54e3pzwm3e0zpdlel6pnavrj9qqv2ttvgk"
+  },
+  {
+    "name": "nansen",
+    "openmetrics_endpoint": "http://23.81.44.98:52260/metrics?format=prometheus",
+    "address": "dydxvaloper1c9ye54e3pzwm3e0zpdlel6pnavrj9qqv2ttvgk"
+  },
+  {
+    "name": "slinky:BinanceNode",
+    "openmetrics_endpoint": "http://3.112.182.28:8002/metrics?format=prometheus",
+    "address": "slinky:dydxvaloper180pv8mahh2yk4kzxmnvcx7l9f3es4a5n6x7c8s"
+  },
+  {
+    "name": "BinanceNode",
+    "openmetrics_endpoint": "http://3.112.182.28:26660/metrics?format=prometheus",
+    "address": "dydxvaloper180pv8mahh2yk4kzxmnvcx7l9f3es4a5n6x7c8s"
+  }
+]

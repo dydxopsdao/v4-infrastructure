@@ -1,0 +1,290 @@
+[
+  {
+    "name": "keplr",
+    "openmetrics_endpoint": "http://178.63.93.249:1317/metrics?format=prometheus"
+  },
+  {
+    "name": "OKX Earn",
+    "openmetrics_endpoint": "http://52.198.204.107:1317/metrics?format=prometheus"
+  },
+  {
+    "name": "kiln",
+    "openmetrics_endpoint": "https://lcd.validator-0.dydx.mainnet.kiln.fi/metrics?format=prometheus"
+  },
+  {
+    "name": "cosmostation",
+    "openmetrics_endpoint": "http://167.179.68.73:16301/metrics?format=prometheus"
+  },
+  {
+    "name": "polkachu.com",
+    "openmetrics_endpoint": "http://199.254.199.84:23861/metrics?format=prometheus"
+  },
+  {
+    "name": "Validation Cloud",
+    "openmetrics_endpoint": "http://57.181.41.168:26660/metrics?format=prometheus"
+  },
+  {
+    "name": "Imperator.co",
+    "openmetrics_endpoint": "http://199.254.199.244:2133/metrics?format=prometheus"
+  },
+  {
+    "name": "crosnest",
+    "openmetrics_endpoint": "http://199.254.199.10:27317/metrics?format=prometheus"
+  },
+  {
+    "name": "eco-stake-asia",
+    "openmetrics_endpoint": "http://15.235.220.10:1317/metrics?format=prometheus"
+  },
+  {
+    "name": "eco-stake-europe",
+    "openmetrics_endpoint": "http://91.134.73.113:1417/metrics?format=prometheus"
+  },
+  {
+    "name": "Chorus One",
+    "openmetrics_endpoint": "http://109.61.83.156:54718/metrics?format=prometheus"
+  },
+  {
+    "name": "enigma",
+    "openmetrics_endpoint": "http://dydx-mainnet-lcd-val.enigma-validator.com:1493/metrics?format=prometheus"
+  },
+  {
+    "name": " Silk Nodes",
+    "openmetrics_endpoint": "http://43.224.35.64:1317/metrics?format=prometheus"
+  },
+  {
+    "name": "Informal Systems",
+    "openmetrics_endpoint": "http://45.76.217.37:26660/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:Informal Systems",
+    "openmetrics_endpoint": "http://45.76.217.37:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "luganodes",
+    "openmetrics_endpoint": "http://dydx.validator.lgns.net:26660/metrics"
+  },
+  {
+    "name": "    Kingnodes 👑",
+    "openmetrics_endpoint": "http://dydx-validator-metrics.kingnodes.net:23817/metrics?format=prometheus"
+  },
+  {
+    "name": "PRO Delegators",
+    "openmetrics_endpoint": "https://node1.nuxian.ch/dydx_opsubdao_getmetrics?format=prometheus"
+  },
+  {
+    "name": "CryptoCrew X Defi Dojo 1",
+    "openmetrics_endpoint": "http://109.123.230.6:26660/metrics?format=prometheus"
+  },
+  {
+    "name": "CryptoCrew X Defi Dojo 2",
+    "openmetrics_endpoint": "http://23.106.231.92:26660/metrics?format=prometheus"
+  },
+  {
+    "name": " Lavender.Five Nodes 🐝",
+    "openmetrics_endpoint": "http://51.210.223.84:23817/metrics?format=prometheus"
+  },
+  {
+    "name": "stakecito",
+    "openmetrics_endpoint": "http://109.123.229.133:1317/metrics?format=prometheus"
+  },
+  {
+    "name": "Nodes.Guru",
+    "openmetrics_endpoint": "http://198.13.44.107:6107/metrics?format=prometheus"
+  },
+  {
+    "name": "provalidator",
+    "openmetrics_endpoint": "http://65.21.45.52:26660/metrics?format=prometheus"
+  },
+  {
+    "name": "Cosmic Validator | 100% Uptime",
+    "openmetrics_endpoint": "http://5.104.82.89:1317/metrics?format=prometheus"
+  },
+  {
+    "name": "p2p-staking-infra",
+    "openmetrics_endpoint": "https://api.dydx-mainnet.tm.p2p.org/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:polychain-1",
+    "openmetrics_endpoint": "http://relay-1.dydx-mainnet-group-1.slinky.unit410.com:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:polychain-2",
+    "openmetrics_endpoint": "http://relay-2.dydx-mainnet-group-1.slinky.unit410.com:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:keplr",
+    "openmetrics_endpoint": "http://178.63.93.249:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:OKX Earn",
+    "openmetrics_endpoint": "http://52.198.204.107:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:kiln",
+    "openmetrics_endpoint": "https://metrics.slinky-0.dydx.mainnet.kiln.fi/metrics"
+  },
+  {
+    "name": "slinky:cosmostation",
+    "openmetrics_endpoint": "http://dydx-mainnet-slinky.cosmostation.io:16314/metrics?format=promethus"
+  },
+  {
+    "name": "slinky:polkachu.com",
+    "openmetrics_endpoint": "http://199.254.199.84:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:Validation Cloud",
+    "openmetrics_endpoint": "http://57.181.41.168:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:figment",
+    "openmetrics_endpoint": "http://199.254.199.206:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:Imperator.co",
+    "openmetrics_endpoint": "http://199.254.199.244:6540/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:coinhall",
+    "openmetrics_endpoint": "http://202.8.9.134:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:crosnest",
+    "openmetrics_endpoint": "http://109.123.230.250:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:eco-stake-asia",
+    "openmetrics_endpoint": "http://15.235.220.10:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:eco-stake-europe",
+    "openmetrics_endpoint": "http://91.134.73.113:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:Chorus One",
+    "openmetrics_endpoint": "http://109.61.83.156:54703/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:enigma",
+    "openmetrics_endpoint": "http://dydx-mainnet-slinky-val.enigma-validator.com:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky: Silk Nodes",
+    "openmetrics_endpoint": "http://43.224.35.64:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:ledger-by-meria",
+    "openmetrics_endpoint": "http://199.254.199.5:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:    Kingnodes 👑",
+    "openmetrics_endpoint": "https://skip-connect-dydx-metrics.kingnodes.com/"
+  },
+  {
+    "name": "slinky:PRO Delegators",
+    "openmetrics_endpoint": "http://57.128.95.108:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:CryptoCrew X Defi Dojo 1",
+    "openmetrics_endpoint": "http://109.123.230.6:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:CryptoCrew X Defi Dojo 2",
+    "openmetrics_endpoint": "http://23.106.231.92:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky: Lavender.Five Nodes 🐝",
+    "openmetrics_endpoint": "http://51.210.223.84:23802/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:stakecito",
+    "openmetrics_endpoint": "http://109.123.229.133:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:crypto-learning-club",
+    "openmetrics_endpoint": "http://64.176.44.178:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:Nodes.Guru",
+    "openmetrics_endpoint": "http://198.13.44.107:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:meria",
+    "openmetrics_endpoint": "http://199.254.199.238:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:nocturnal-labs",
+    "openmetrics_endpoint": "http://5.199.165.39:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:block-daemon",
+    "openmetrics_endpoint": "http://metrics.mainnet.dydx.bdnodes.net:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:staked",
+    "openmetrics_endpoint": "http://slinky:@G2DV*ycEiwd4z4G@VtAWj6CA9i*96Zw@slinky-dydx-metrics.prod-utility-eks-eu-west-1.staked.cloud/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:provalidator",
+    "openmetrics_endpoint": "http://65.21.45.52:8080/slinky/oracle/v1/prices"
+  },
+  {
+    "name": "slinky:cosmic-validator",
+    "openmetrics_endpoint": "http://5.104.82.89:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:hashkey-cloud",
+    "openmetrics_endpoint": "http://18.178.184.95:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:ttt",
+    "openmetrics_endpoint": "http://45.32.32.116:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:kahuna",
+    "openmetrics_endpoint": "http://91.134.9.162:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:stake-with-us",
+    "openmetrics_endpoint": "http://23.81.44.98:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:p2p-staking-infra",
+    "openmetrics_endpoint": "https://api.dydx-mainnet.tm.p2p.org/slinky?format=prometheus"
+  },
+  {
+    "name": "slinky:infstones",
+    "openmetrics_endpoint": "http://15.235.224.169:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:interstellar-lounge",
+    "openmetrics_endpoint": "http://dydx-val.interstellar-lounge.org:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:nodeplus",
+    "openmetrics_endpoint": "http://5.104.81.60:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:owallet",
+    "openmetrics_endpoint": "http://65.109.118.94:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "owallet",
+    "openmetrics_endpoint": "http://65.109.118.94:23861/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:nansen",
+    "openmetrics_endpoint": "http://23.81.44.98:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "nansen",
+    "openmetrics_endpoint": "http://23.81.44.98:52260/metrics?format=prometheus"
+  },
+  {
+    "name": "slinky:BinanceNode",
+    "openmetrics_endpoint": "http://3.112.182.28:8002/metrics?format=prometheus"
+  },
+  {
+    "name": "BinanceNode",
+    "openmetrics_endpoint": "http://3.112.182.28:26660/metrics?format=prometheus"
+  }
+]

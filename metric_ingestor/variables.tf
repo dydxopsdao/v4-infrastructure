@@ -36,7 +36,7 @@ variable "region" {
 
 variable "validators" {
   type = list(object({
-    address              = string
+    addressm               = string
     name                 = string
     openmetrics_endpoint = string
   }))
