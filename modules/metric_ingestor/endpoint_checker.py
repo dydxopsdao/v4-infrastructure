@@ -76,6 +76,9 @@ class ValidatorMetricsCheck(AgentCheck):
 
             # Parse Prometheus format
             for family in text_string_to_metric_families(metrics_text):
+                # The family type tells us what kind of metric it is
+                metric_type = family.type
+                
                 for sample in family.samples:
                     # Check if sample name matches any of the regexp patterns in self.metrics
                     if self.metrics is not None and not any(
@@ -115,8 +118,34 @@ class ValidatorMetricsCheck(AgentCheck):
                         # f"dynamic_tag:{dynamic_data['some_field']}"
                     ]
 
-                    # Submit the metric with all tags
-                    self.gauge(metric_name, metric_value, tags=tags)
+                    # Add labels from sample as tags
+                    for label_name, label_value in sample.labels.items():
+                        tags.append(f"{label_name}:{label_value}")
+
+                    # Submit the metric with the appropriate type
+                    if metric_type == "counter":
+                        self.monotonic_count(metric_name, metric_value, tags=tags)
+                    elif metric_type == "gauge":
+                        self.gauge(metric_name, metric_value, tags=tags)
+                    elif metric_type == "histogram":
+                        # For histograms, we need to calculate quantiles
+                        if ".sum" in sample.name:
+                            self.gauge(metric_name, metric_value, tags=tags)
+                        elif ".count" in sample.name:
+                            self.monotonic_count(metric_name, metric_value, tags=tags)
+                        else:
+                            self.gauge(metric_name, metric_value, tags=tags)
+                    elif metric_type == "summary":
+                        # Similar to histogram handling
+                        if ".sum" in sample.name:
+                            self.gauge(metric_name, metric_value, tags=tags)
+                        elif ".count" in sample.name:
+                            self.monotonic_count(metric_name, metric_value, tags=tags)
+                        else:
+                            self.gauge(metric_name, metric_value, tags=tags)
+                    else:
+                        # Default to gauge for unknown types
+                        self.gauge(metric_name, metric_value, tags=tags)
 
         except Exception as e:
             self.log.error(f"Error collecting metrics from {endpoint}: {str(e)}")
