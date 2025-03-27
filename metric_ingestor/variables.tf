@@ -36,9 +36,10 @@ variable "region" {
 
 variable "validators" {
   type = list(object({
-    addressm               = string
-    name                 = string
-    openmetrics_endpoint = string
+    address         = string
+    name            = string
+    endpoint_dydx   = string
+    endpoint_slinky = string
   }))
   description = "List of external validators for which to collect and ingest metrics"
 }

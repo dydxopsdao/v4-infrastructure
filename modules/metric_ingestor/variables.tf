@@ -19,6 +19,11 @@ variable "name" {
   description = "Name of the app."
 }
 
+variable "region" {
+  type        = string
+  description = "AWS region to deploy the metric ingestor"
+}
+
 # -----------------------------------------------------------------------------
 # Networking
 # -----------------------------------------------------------------------------
@@ -51,9 +56,10 @@ variable "metrics_namespace" {
 
 variable "validators" {
   type = list(object({
-    address              = string
-    name                 = string
-    openmetrics_endpoint = string
+    address         = string
+    name            = string
+    endpoint_dydx   = string
+    endpoint_slinky = string
   }))
   description = "List of validators for which to collect metrics"
 }

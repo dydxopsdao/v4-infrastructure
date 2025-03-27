@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "main" {
             logDriver = "awslogs",
             options = {
               "awslogs-group"         = "/ecs/${var.name}",
-              "awslogs-region"        = data.aws_region.current.name,
+              "awslogs-region"        = var.region,
               "awslogs-stream-prefix" = "datadog-agent",
               "awslogs-create-group"  = "true"
             }
