@@ -6,6 +6,12 @@ module "datadog_agent" {
   dd_site         = var.datadog_site
   service_name    = "metric-ingestor"
 
+  docker_labels = {
+    "com.datadoghq.ad.instances" = jsonencode([])
+    "com.datadoghq.ad.check_names" = jsonencode(["openmetrics"])
+    "com.datadoghq.ad.init_configs" = jsonencode([{}])
+  }
+
   # https://docs.datadoghq.com/containers/docker/prometheus/?tabs=standard#configuration
   # docker_labels = {
   #   "com.datadoghq.ad.instances" = jsonencode(
