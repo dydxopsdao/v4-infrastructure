@@ -41,8 +41,8 @@ data "cloudinit_config" "init" {
         # Endpoint Checker
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/endpoint_checker.py")
-          path     = "/custom-metrics/checks.d/endpoint_checker.py"
+          content  = filebase64("${path.module}/validator_metrics.py")
+          path     = "/custom-metrics/checks.d/validator_metrics.py"
         },
         {
           encoding = "b64"
@@ -61,7 +61,7 @@ data "cloudinit_config" "init" {
             }
             instances = var.validators
           }))
-          path = "/custom-metrics/conf.d/endpoint_checker.yaml"
+          path = "/custom-metrics/conf.d/validator_metrics.yaml"
         },
 
         # Voting Power

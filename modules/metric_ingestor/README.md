@@ -26,5 +26,6 @@ validators = [
 
 Apart from the regular Datadog Agent operation, there are also a custom checks:
 
-- `endpoint_checker`: Emits a custom metric that shows validator endpoint reachability over time.
+- `validator_metrics`: Extends the `OpenMetricsBaseCheck` class to scrape metrics from multiple
+  endpoints and decorate them with additional tags.
 - `voting_power`: Emits a custom metric that tracks the voting power of validators in the active set.
