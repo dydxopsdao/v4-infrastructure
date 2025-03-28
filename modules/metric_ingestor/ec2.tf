@@ -62,6 +62,9 @@ data "cloudinit_config" "init" {
                 max_returned_metrics = var.max_returned_metrics
                 tags = [
                   "env:${var.environment}",
+                  "validator_address:${validator.address}",
+                  "validator_name:${validator.name}",
+                  "endpoint_type:${validator.endpoint_type}"
                 ]
               })
             ]
