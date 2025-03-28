@@ -20,6 +20,7 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
     def check(self, instance):
         self.log.info("Checking instance: %s", instance)
         self.log.info("Tags: %s", instance.get("tags"))
+        instance["tags"].append("dynamic_tag:test")
 
         super().check(instance)
         
