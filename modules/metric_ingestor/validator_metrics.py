@@ -16,8 +16,12 @@ REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
 class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
     def __init__(self, name, init_config, instances):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
-        self.set_dynamic_tags("dynamic_tag:test")
 
+    def check(self, instance):
+        self.log.info("Checking instance: %s", instance)
+        self.log.info("Tags: %s", instance.get("tags"))
+
+        super().check(instance)
         
 # class EndpointChecker(AgentCheck):
 #     def check(self, instance):
