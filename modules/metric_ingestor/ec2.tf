@@ -56,7 +56,7 @@ data "cloudinit_config" "init" {
               reachability_timeout = 10
             }
             instances = [
-              for validator in var.validators : merge(validator, {
+              for validator in var.validators : {
                 namespace = var.metrics_namespace
                 metrics = var.metrics
                 max_returned_metrics = var.max_returned_metrics
@@ -66,7 +66,7 @@ data "cloudinit_config" "init" {
                   "validator_name:${validator.name}",
                   "endpoint_type:${validator.endpoint_type}"
                 ]
-              })
+              }
             ]
           }))
           path = "/custom-metrics/conf.d/validator_metrics.yaml"
