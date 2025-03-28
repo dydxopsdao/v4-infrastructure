@@ -4,14 +4,22 @@
 
 import re
 import requests
+from itertools import chain
 
-from datadog_checks.base import AgentCheck, OpenMetricsBaseCheck
+from datadog_checks.base import OpenMetricsBaseCheckV2
 from prometheus_client.parser import text_string_to_metric_families
 
 __version__ = "1.0.0"
 REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
 
 
+class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
+    def __init__(self, name, init_config, instances):
+        super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
+
+    # def set_dynamic_tags(self, *tags):
+    #     self.tags = tuple(chain(self.static_tags, tags))
+        
 # class EndpointChecker(AgentCheck):
 #     def check(self, instance):
 #         metric_value = 0
@@ -40,79 +48,79 @@ REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
 #         )
 
 
-class ValidatorMetricsCheck(OpenMetricsBaseCheck):
-    def __init__(self, name, init_config, instances):
-        self.log.info("Initializing ValidatorMetricsCheck")
+# class ValidatorMetricsCheck(OpenMetricsBaseCheck):
+#     def __init__(self, name, init_config, instances):
+#         self.log.info("Initializing ValidatorMetricsCheck")
 
-        # Initialize with parent class but capture original parameters
-        super().__init__(name, init_config, instances)
+#         # Initialize with parent class but capture original parameters
+#         super().__init__(name, init_config, instances)
         
-        # Store our custom parameters from init_config
-        self.env = self.init_config.get("env")
-        self.metrics_namespace = self.init_config.get("metrics_namespace")
-        self.metrics = self.init_config.get("metrics")
-        self.max_returned_metrics = self.init_config.get("max_returned_metrics")
+#         # Store our custom parameters from init_config
+#         self.env = self.init_config.get("env")
+#         self.metrics_namespace = self.init_config.get("metrics_namespace")
+#         self.metrics = self.init_config.get("metrics")
+#         self.max_returned_metrics = self.init_config.get("max_returned_metrics")
         
-    def check(self, instance):
-        self.log.info("Starting ValidatorMetricsCheck for %s", instance)
+#     def check(self, instance):
+#         self.log.info("Starting ValidatorMetricsCheck for %s", instance)
         
-        validator_address = instance.get("address")
-        validator_name = instance.get("name")
+#         validator_address = instance.get("address")
+#         validator_name = instance.get("name")
         
-        # Process each endpoint
-        self._process_endpoint(
-            instance.get("endpoint_dydx"),
-            validator_address,
-            validator_name,
-            "dydx"
-        )
+#         # Process each endpoint
+#         self._process_endpoint(
+#             instance.get("endpoint_dydx"),
+#             validator_address,
+#             validator_name,
+#             "dydx"
+#         )
         
-        self._process_endpoint(
-            instance.get("endpoint_slinky"),
-            validator_address,
-            validator_name,
-            "slinky"
-        )
+#         self._process_endpoint(
+#             instance.get("endpoint_slinky"),
+#             validator_address,
+#             validator_name,
+#             "slinky"
+#         )
         
-        self.log.info("Finished ValidatorMetricsCheck")
+#         self.log.info("Finished ValidatorMetricsCheck")
     
-    def _process_endpoint(self, endpoint_url, validator_address, validator_name, metric_source):
-        """Process a single metrics endpoint with error handling"""
-        if endpoint_url is None:
-            return
+#     def _process_endpoint(self, endpoint_url, validator_address, validator_name, metric_source):
+#         """Process a single metrics endpoint with error handling"""
+#         if endpoint_url is None:
+#             return
             
-        try:
-            scraper_config = self._create_scraper_config(
-                endpoint_url, 
-                validator_address, 
-                validator_name, 
-                metric_source
-            )
-            self.process(scraper_config)
-        except Exception as e:
-            self.log.error(f"Error processing {metric_source} endpoint {endpoint_url}: {str(e)}")
-            self.log.exception("Exception details")
+#         try:
+#             scraper_config = self._create_scraper_config(
+#                 endpoint_url, 
+#                 validator_address, 
+#                 validator_name, 
+#                 metric_source
+#             )
+#             self.process(scraper_config)
+#         except Exception as e:
+#             self.log.error(f"Error processing {metric_source} endpoint {endpoint_url}: {str(e)}")
+#             self.log.exception("Exception details")
             
-    def _create_scraper_config(self, endpoint, validator_address, validator_name, metric_source):
-        """Create a scraper configuration dictionary for OpenMetricsBaseCheck"""
-        return {
-            'prometheus_url': endpoint,
-            'namespace': self.metrics_namespace,
-            'metrics': self.metrics,
-            'prometheus_metrics_prefix': '',
-            'health_service_check': True,
-            'extra_headers': {},
-            'tags': [
-                f"env:{self.env}",
-                f"validator_address:{validator_address}",
-                f"validator_name:{validator_name}",
-                f"metric_source:{metric_source}",
-                f"source:custom_check"
-            ],
-            'max_returned_metrics': self.max_returned_metrics,
-            'send_histogram_buckets': True,  # Include histogram buckets
-            'send_monotonic_counter': True   # Send counters as monotonic_count
-        }
+#     def _create_scraper_config(self, endpoint, validator_address, validator_name, metric_source):
+#         """Create a scraper configuration dictionary for OpenMetricsBaseCheck"""
+#         return {
+#             'prometheus_url': endpoint,
+#             'namespace': self.metrics_namespace,
+#             'metrics': self.metrics,
+#             'prometheus_metrics_prefix': '',
+#             'health_service_check': True,
+#             'extra_headers': {},
+#             'tags': [
+#                 f"env:{self.env}",
+#                 f"validator_address:{validator_address}",
+#                 f"validator_name:{validator_name}",
+#                 f"metric_source:{metric_source}",
+#                 f"source:custom_check"
+#             ],
+#             'max_returned_metrics': self.max_returned_metrics,
+#             'send_histogram_buckets': True,  # Include histogram buckets
+#             'send_monotonic_counter': True   # Send counters as monotonic_count
+#         }
 
     # def get_external_data(self, validator_address):
     #     """

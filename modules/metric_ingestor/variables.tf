@@ -58,8 +58,8 @@ variable "validators" {
   type = list(object({
     address         = string
     name            = string
-    endpoint_dydx   = string
-    endpoint_slinky = string
+    openmetrics_endpoint = string
+    endpoint_type   = string
   }))
   description = "List of validators for which to collect metrics"
 }

@@ -38,7 +38,7 @@ data "cloudinit_config" "init" {
     content_type = "text/cloud-config"
     content = yamlencode({
       write_files = [
-        # Endpoint Checker
+        # Validator Metrics
         {
           encoding = "b64"
           content  = filebase64("${path.module}/validator_metrics.py")
@@ -53,13 +53,18 @@ data "cloudinit_config" "init" {
               min_collection_interval = 15
 
               # Custom settings:
-              env                  = var.environment
-              timeout              = 10 # seconds to wait for a response from each endpoint
-              metrics_namespace    = var.metrics_namespace
-              metrics              = var.metrics
-              max_returned_metrics = var.max_returned_metrics
+              reachability_timeout = 10
             }
-            instances = var.validators
+            instances = [
+              for validator in var.validators : merge(validator, {
+                namespace = var.metrics_namespace
+                metrics = var.metrics
+                max_returned_metrics = var.max_returned_metrics
+                tags = [
+                  "env:${var.environment}",
+                ]
+              })
+            ]
           }))
           path = "/custom-metrics/conf.d/validator_metrics.yaml"
         },
@@ -74,7 +79,7 @@ data "cloudinit_config" "init" {
           encoding = "b64"
           content = base64encode(yamlencode({
             init_config = {
-              # Voting power is technically a custom checker with a single instance,
+              # Voting power is technically a custom check with a single instance,
               # so this collection interval controls how often all existing validators
               # are checked.
               min_collection_interval = 60
