@@ -17,8 +17,9 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
     def __init__(self, name, init_config, instances):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
 
-    # def set_dynamic_tags(self, *tags):
-    #     self.tags = tuple(chain(self.static_tags, tags))
+    def set_dynamic_tags(self, *tags):
+        tags.append(f"dynamic_tag:test")
+        super(ValidatorMetricsCheck, self).set_dynamic_tags(*tags)
         
 # class EndpointChecker(AgentCheck):
 #     def check(self, instance):
