@@ -38,27 +38,26 @@ class VotingPowerCheck(AgentCheck):
         # Process validators
         validators = []
         monikers = {}
-        for validator in data["validators"]:
-            if validator["jailed"]:
+        for ext_val in data["validators"]:
+            if ext_val["jailed"]:
                 continue
 
-            voting_power = Decimal(validator["tokens"]) / Decimal("1000000000000000000")
+            voting_power = Decimal(ext_val["tokens"]) / Decimal("1000000000000000000")
             percentage = (voting_power / total_power_normalized) * Decimal("100")
 
             validators.append(
                 {
-                    "validator_address": validator["operator_address"],
-                    "moniker": validator["description"]["moniker"],
+                    "validator_address": ext_val["operator_address"],
+                    "moniker": ext_val["description"]["moniker"],
                     "voting_power": voting_power,
                     "percentage": percentage,
                 }
             )
 
-            monikers[validator["operator_address"]] = validator["description"][
-                "moniker"
-            ]
+            monikers[ext_val["operator_address"]] = ext_val["description"]["moniker"]
 
         # Dump monikers to file
+        self.log.info(f"Dumping monikers to file: {MONIKERS_FILE}")
         with open(MONIKERS_FILE, "w") as f:
             json.dump(monikers, f)
 
@@ -68,24 +67,24 @@ class VotingPowerCheck(AgentCheck):
 
         # Calculate cumulative share
         cumulative_sum = Decimal("0")
-        for validator in validators:
-            cumulative_sum += validator["percentage"]
+        for ext_val in validators:
+            cumulative_sum += ext_val["percentage"]
 
             tags = [
                 f"env:{self.init_config['env']}",
-                f"validator_address:{validator['validator_address']}",
-                f"moniker:{validator['moniker']}",
+                f"validator_address:{ext_val['validator_address']}",
+                f"moniker:{ext_val['moniker']}",
             ]
 
             # Submit metrics with all values
             self.gauge(
                 "dydxopsservices.voting_power.tokens",
-                float(validator["voting_power"]),
+                float(ext_val["voting_power"]),
                 tags=tags,
             )
             self.gauge(
                 "dydxopsservices.voting_power.percentage",
-                float(validator["percentage"]),
+                float(ext_val["percentage"]),
                 tags=tags,
             )
             self.gauge(
