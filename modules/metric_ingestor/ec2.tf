@@ -58,8 +58,8 @@ data "cloudinit_config" "init" {
             instances = [
               for validator in var.validators : {
                 openmetrics_endpoint = validator.openmetrics_endpoint
-                namespace = var.metrics_namespace
-                metrics = var.metrics
+                namespace            = var.metrics_namespace
+                metrics              = var.metrics
                 max_returned_metrics = var.max_returned_metrics
                 tags = [
                   "env:${var.environment}",
