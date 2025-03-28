@@ -8,6 +8,11 @@ from decimal import Decimal
 
 from datadog_checks.base import AgentCheck
 
+FETCH_PATH = (
+    "/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=100"
+)
+MONIKERS_FILE = "/tmp/monikers.json"
+
 
 class VotingPowerCheck(AgentCheck):
     def check(self, instance):
@@ -16,9 +21,7 @@ class VotingPowerCheck(AgentCheck):
         env = instance.get("env")
 
         # Fetch validator data
-        response = requests.get(
-            f"{base_api_url}/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=100"
-        )
+        response = requests.get(f"{base_api_url}{FETCH_PATH}")
         data = response.json()
 
         # Calculate total power
@@ -28,10 +31,13 @@ class VotingPowerCheck(AgentCheck):
         total_power_normalized = total_power / Decimal("1000000000000000000")
 
         # Submit total voting power
-        self.gauge("dydxopsservices.voting_power.total_tokens", float(total_power_normalized))
+        self.gauge(
+            "dydxopsservices.voting_power.total_tokens", float(total_power_normalized)
+        )
 
         # Process validators
         validators = []
+        monikers = {}
         for validator in data["validators"]:
             if validator["jailed"]:
                 continue
@@ -39,21 +45,32 @@ class VotingPowerCheck(AgentCheck):
             voting_power = Decimal(validator["tokens"]) / Decimal("1000000000000000000")
             percentage = (voting_power / total_power_normalized) * Decimal("100")
 
-            validators.append({
-                "validator_address": validator["operator_address"],
-                "moniker": validator["description"]["moniker"],
-                "voting_power": voting_power,
-                "percentage": percentage,
-            })
+            validators.append(
+                {
+                    "validator_address": validator["operator_address"],
+                    "moniker": validator["description"]["moniker"],
+                    "voting_power": voting_power,
+                    "percentage": percentage,
+                }
+            )
 
-        # Sort validators by voting power (descending)
+            monikers[validator["operator_address"]] = validator["description"][
+                "moniker"
+            ]
+
+        # Dump monikers to file
+        with open(MONIKERS_FILE, "w") as f:
+            json.dump(monikers, f)
+
+        # Sort validators by voting power (descending) and limit to active set only
         validators.sort(key=lambda x: x["voting_power"], reverse=True)
+        validators = validators[:60]
 
-        # Calculate cumulative share and limit to top 60
+        # Calculate cumulative share
         cumulative_sum = Decimal("0")
-        for validator in validators[:60]:
+        for validator in validators:
             cumulative_sum += validator["percentage"]
-            
+
             tags = [
                 f"env:{self.init_config['env']}",
                 f"validator_address:{validator['validator_address']}",
@@ -64,15 +81,15 @@ class VotingPowerCheck(AgentCheck):
             self.gauge(
                 "dydxopsservices.voting_power.tokens",
                 float(validator["voting_power"]),
-                tags=tags
+                tags=tags,
             )
             self.gauge(
                 "dydxopsservices.voting_power.percentage",
                 float(validator["percentage"]),
-                tags=tags
+                tags=tags,
             )
             self.gauge(
                 "dydxopsservices.voting_power.cumulative_share",
                 float(cumulative_sum),
-                tags=tags
+                tags=tags,
             )
