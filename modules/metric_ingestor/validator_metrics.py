@@ -42,6 +42,8 @@ REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
 
 class ValidatorMetricsCheck(OpenMetricsBaseCheck):
     def __init__(self, name, init_config, instances):
+        self.log.info("Initializing ValidatorMetricsCheck")
+
         # Initialize with parent class but capture original parameters
         super().__init__(name, init_config, instances)
         
