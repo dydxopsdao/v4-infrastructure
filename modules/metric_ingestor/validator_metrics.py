@@ -16,7 +16,12 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
 
     def check(self, instance):
-        dynamic_tags = self._get_dynamic_tags(instance)
+        monikers = self._get_monikers()
+        if not monikers:
+            self.log.warning("No monikers found")
+            return
+
+        dynamic_tags = self._get_dynamic_tags(instance, monikers)
         all_tags = instance["tags"] + dynamic_tags
         self.set_dynamic_tags(*dynamic_tags)
 
@@ -34,8 +39,7 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
             tags=all_tags,
         )
 
-    def _get_dynamic_tags(self, instance):
-        monikers = self._get_monikers()
+    def _get_dynamic_tags(self, instance, monikers):
         moniker = monikers.get(instance["validator_address"])
         if moniker:
             return [f"moniker:{moniker}"]
