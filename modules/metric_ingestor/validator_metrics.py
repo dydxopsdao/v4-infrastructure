@@ -1,13 +1,11 @@
 # For docs on custom OpenMetrics check see:
 # - https://docs.datadoghq.com/developers/custom_checks/prometheus/
 
-from itertools import chain
-
 from datadog_checks.base import OpenMetricsBaseCheckV2
 from prometheus_client.parser import text_string_to_metric_families
 
 __version__ = "1.0.0"
-REACHABILITY_METRIC_NAME = "validator_endpoint_reachability"
+REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
 
 
 class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
@@ -15,12 +13,9 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
 
     def check(self, instance):
-        self.log.info("tags before: %s", instance["tags"])
-
-        dynamic_tags = ["dynamic_tag:test"]
+        dynamic_tags = self._get_dynamic_tags(instance)
+        all_tags = instance["tags"] + dynamic_tags
         self.set_dynamic_tags(*dynamic_tags)
-
-        self.log.info("tags after: %s", instance["tags"])
 
         try:
             super().check(instance)
@@ -30,16 +25,14 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         else:
             is_reachable = 1
 
-        full_metric_name = (
-            f"{instance['metrics_namespace']}.{REACHABILITY_METRIC_NAME}"
-            if instance["metrics_namespace"]
-            else REACHABILITY_METRIC_NAME
-        )
         self.gauge(
-            full_metric_name,
+            REACHABILITY_METRIC_NAME,
             is_reachable,
-            tags=chain(instance["tags"], dynamic_tags),
+            tags=all_tags,
         )
+
+    def _get_dynamic_tags(self, instance):
+        return ["dynamic_tag:test"]
 
 
 # class EndpointChecker(AgentCheck):
