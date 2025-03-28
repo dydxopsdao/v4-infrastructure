@@ -65,7 +65,6 @@ data "cloudinit_config" "init" {
                 tags = [
                   "env:${var.environment}",
                   "validator_address:${validator.address}",
-                  "validator_name:${validator.name}",
                   "endpoint_type:${validator.endpoint_type}"
                 ]
               }
