@@ -15,12 +15,12 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
 
     def check(self, instance):
-        self.log.info("tags before: self.tags=%s instance.tags=%s", self.tags, instance["tags"])
+        self.log.info("tags before: %s", instance["tags"])
 
         dynamic_tags = ["dynamic_tag:test"]
         self.set_dynamic_tags(*dynamic_tags)
 
-        self.log.info("tags after: self.tags=%s instance.tags=%s", self.tags, instance["tags"])
+        self.log.info("tags after: %s", instance["tags"])
 
         try:
             super().check(instance)
@@ -38,7 +38,7 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         self.gauge(
             full_metric_name,
             is_reachable,
-            tags=chain(self.tags, dynamic_tags),
+            tags=chain(instance["tags"], dynamic_tags),
         )
 
 
