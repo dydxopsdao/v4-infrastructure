@@ -44,17 +44,18 @@ class VotingPowerCheck(AgentCheck):
 
             voting_power = Decimal(ext_val["tokens"]) / Decimal("1000000000000000000")
             percentage = (voting_power / total_power_normalized) * Decimal("100")
+            moniker = ext_val["description"]["moniker"].strip()
 
             validators.append(
                 {
                     "validator_address": ext_val["operator_address"],
-                    "moniker": ext_val["description"]["moniker"],
+                    "moniker": moniker,
                     "voting_power": voting_power,
                     "percentage": percentage,
                 }
             )
 
-            monikers[ext_val["operator_address"]] = ext_val["description"]["moniker"]
+            monikers[ext_val["operator_address"]] = moniker
 
         # Dump monikers to file
         with open(MONIKERS_FILE, "w") as f:
