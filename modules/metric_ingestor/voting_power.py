@@ -57,7 +57,6 @@ class VotingPowerCheck(AgentCheck):
             monikers[ext_val["operator_address"]] = ext_val["description"]["moniker"]
 
         # Dump monikers to file
-        self.log.info(f"Dumping monikers to file: {MONIKERS_FILE}")
         with open(MONIKERS_FILE, "w") as f:
             json.dump(monikers, f)
 
