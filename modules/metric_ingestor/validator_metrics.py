@@ -1,16 +1,13 @@
-# For Datadog custom check API see:
-# - https://docs.datadoghq.com/developers/custom_checks/write_agent_check/
-# - https://github.com/DataDog/datadog-agent/blob/main/docs/dev/checks/README.md
+# For docs on custom OpenMetrics check see:
+# - https://docs.datadoghq.com/developers/custom_checks/prometheus/
 
-import re
-import requests
 from itertools import chain
 
 from datadog_checks.base import OpenMetricsBaseCheckV2
 from prometheus_client.parser import text_string_to_metric_families
 
 __version__ = "1.0.0"
-REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
+REACHABILITY_METRIC_NAME = "validator_endpoint_reachability"
 
 
 class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
@@ -18,13 +15,33 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
 
     def check(self, instance):
-        self.set_dynamic_tags("dynamic_tag:test")
+        self.log.info("tags before: self.tags=%s instance.tags=%s", self.tags, instance["tags"])
+
+        dynamic_tags = ["dynamic_tag:test"]
+        self.set_dynamic_tags(*dynamic_tags)
+
+        self.log.info("tags after: self.tags=%s instance.tags=%s", self.tags, instance["tags"])
+
         try:
             super().check(instance)
         except Exception as e:
             self.log.error("Error checking instance: %s", e)
-            raise e
-        
+            is_reachable = 0
+        else:
+            is_reachable = 1
+
+        full_metric_name = (
+            f"{instance['metrics_namespace']}.{REACHABILITY_METRIC_NAME}"
+            if instance["metrics_namespace"]
+            else REACHABILITY_METRIC_NAME
+        )
+        self.gauge(
+            full_metric_name,
+            is_reachable,
+            tags=chain(self.tags, dynamic_tags),
+        )
+
+
 # class EndpointChecker(AgentCheck):
 #     def check(self, instance):
 #         metric_value = 0
@@ -59,19 +76,19 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
 
 #         # Initialize with parent class but capture original parameters
 #         super().__init__(name, init_config, instances)
-        
+
 #         # Store our custom parameters from init_config
 #         self.env = self.init_config.get("env")
 #         self.metrics_namespace = self.init_config.get("metrics_namespace")
 #         self.metrics = self.init_config.get("metrics")
 #         self.max_returned_metrics = self.init_config.get("max_returned_metrics")
-        
+
 #     def check(self, instance):
 #         self.log.info("Starting ValidatorMetricsCheck for %s", instance)
-        
+
 #         validator_address = instance.get("address")
 #         validator_name = instance.get("name")
-        
+
 #         # Process each endpoint
 #         self._process_endpoint(
 #             instance.get("endpoint_dydx"),
@@ -79,33 +96,33 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
 #             validator_name,
 #             "dydx"
 #         )
-        
+
 #         self._process_endpoint(
 #             instance.get("endpoint_slinky"),
 #             validator_address,
 #             validator_name,
 #             "slinky"
 #         )
-        
+
 #         self.log.info("Finished ValidatorMetricsCheck")
-    
+
 #     def _process_endpoint(self, endpoint_url, validator_address, validator_name, metric_source):
 #         """Process a single metrics endpoint with error handling"""
 #         if endpoint_url is None:
 #             return
-            
+
 #         try:
 #             scraper_config = self._create_scraper_config(
-#                 endpoint_url, 
-#                 validator_address, 
-#                 validator_name, 
+#                 endpoint_url,
+#                 validator_address,
+#                 validator_name,
 #                 metric_source
 #             )
 #             self.process(scraper_config)
 #         except Exception as e:
 #             self.log.error(f"Error processing {metric_source} endpoint {endpoint_url}: {str(e)}")
 #             self.log.exception("Exception details")
-            
+
 #     def _create_scraper_config(self, endpoint, validator_address, validator_name, metric_source):
 #         """Create a scraper configuration dictionary for OpenMetricsBaseCheck"""
 #         return {
@@ -127,17 +144,17 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
 #             'send_monotonic_counter': True   # Send counters as monotonic_count
 #         }
 
-    # def get_external_data(self, validator_address):
-    #     """
-    #     Query external source for dynamic data.
-    #     This could be an API call, database query, etc.
-    #     """
-    #     try:
-    #         # Example: Make API call to external service
-    #         response = requests.get(
-    #             f"https://your-api.com/validator/{validator_address}"
-    #         )
-    #         return response.json()
-    #     except Exception as e:
-    #         self.log.error(f"Error fetching external data: {str(e)}")
-    #         return {}
+# def get_external_data(self, validator_address):
+#     """
+#     Query external source for dynamic data.
+#     This could be an API call, database query, etc.
+#     """
+#     try:
+#         # Example: Make API call to external service
+#         response = requests.get(
+#             f"https://your-api.com/validator/{validator_address}"
+#         )
+#         return response.json()
+#     except Exception as e:
+#         self.log.error(f"Error fetching external data: {str(e)}")
+#         return {}
