@@ -40,12 +40,14 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         )
 
     def _get_dynamic_tags(self, instance, monikers):
-        self.log.info(f"Instance: {instance}")
         address = instance["address"]
 
         moniker = monikers.get(address)
         if moniker:
-            return [f"moniker:{moniker}"]
+            return [
+                f"moniker:{moniker}",
+                f"validator_name:{moniker}",
+            ]
         else:
             self.log.warning(f"No moniker found for address: {address}")
             return []
