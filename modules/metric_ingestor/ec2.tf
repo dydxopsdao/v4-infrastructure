@@ -62,6 +62,7 @@ data "cloudinit_config" "init" {
                 metrics              = var.metrics
                 max_returned_metrics = var.max_returned_metrics
                 address              = validator.address
+                machine_id           = validator.machine_id
                 tags = [
                   "env:${var.environment}",
                   "validator_address:${validator.address}",
