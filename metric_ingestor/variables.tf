@@ -39,6 +39,7 @@ variable "validators" {
     address              = string
     openmetrics_endpoint = string
     endpoint_type        = string
+    machine_id           = string
   }))
   description = "List of external validators for which to collect and ingest metrics"
 }
