@@ -33,13 +33,12 @@ variable "region" {
   type        = string
   description = "AWS region to deploy the metric ingestor"
 }
-
 variable "validators" {
   type = list(object({
     address              = string
     openmetrics_endpoint = string
     endpoint_type        = string
-    machine_id           = string
+    machine_id           = optional(string)
   }))
   description = "List of external validators for which to collect and ingest metrics"
 }
