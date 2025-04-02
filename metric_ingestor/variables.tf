@@ -58,8 +58,8 @@ variable "enabled" {
   description = "Whether to enable the metric ingestor"
 }
 
-variable "voting_power_node_base_url" {
+variable "chain_metadata_node_base_url" {
   type        = string
-  description = "Base URL for the REST API of a full node that will be used to check voting power"
+  description = "Base URL for the REST API of a full node that will be used to check chain metadata"
   default     = "https://dydx-dao-api.polkachu.com"
 }

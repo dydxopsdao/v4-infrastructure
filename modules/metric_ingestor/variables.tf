@@ -110,7 +110,7 @@ variable "root_block_device_delete_on_termination" {
 # Chain Interaction
 # -----------------------------------------------------------------------------
 
-variable "voting_power_node_base_url" {
+variable "chain_metadata_node_base_url" {
   type        = string
-  description = "Base URL for the REST API of a full node that will be used to check voting power"
+  description = "Base URL for the REST API of a full node that will be used to check chain metadata"
 }

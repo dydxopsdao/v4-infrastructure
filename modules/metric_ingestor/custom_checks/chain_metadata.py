@@ -14,7 +14,7 @@ FETCH_PATH = (
 MONIKERS_FILE = "/tmp/monikers.json"
 
 
-class VotingPowerCheck(AgentCheck):
+class ChainMetadataCheck(AgentCheck):
     def check(self, instance):
         # Get configuration
         base_api_url = instance.get("base_api_url")

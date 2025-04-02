@@ -74,19 +74,18 @@ data "cloudinit_config" "init" {
           path = "/custom-metrics/conf.d/validator_metrics.yaml"
         },
 
-        # Voting Power
+        # Chain Metadata
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/custom_checks/voting_power.py")
-          path     = "/custom-metrics/checks.d/voting_power.py"
+          content  = filebase64("${path.module}/custom_checks/chain_metadata.py")
+          path     = "/custom-metrics/checks.d/chain_metadata.py"
         },
         {
           encoding = "b64"
           content = base64encode(yamlencode({
             init_config = {
-              # Voting power is technically a custom check with a single instance,
-              # so this collection interval controls how often all existing validators
-              # are checked.
+              # Chain metadata is a custom check with a single instance, so this
+              # collection interval controls how often all the chain metadata is checked.
               min_collection_interval = 60
 
               # Custom settings:
@@ -94,11 +93,11 @@ data "cloudinit_config" "init" {
             }
             instances = [
               {
-                base_api_url = var.voting_power_node_base_url
+                base_api_url = var.chain_metadata_node_base_url
               }
             ]
           }))
-          path = "/custom-metrics/conf.d/voting_power.yaml"
+          path = "/custom-metrics/conf.d/chain_metadata.yaml"
         }
       ]
     })
