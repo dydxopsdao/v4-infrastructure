@@ -41,7 +41,7 @@ data "cloudinit_config" "init" {
         # Validator Metrics
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/validator_metrics.py")
+          content  = filebase64("${path.module}/custom_checks/validator_metrics.py")
           path     = "/custom-metrics/checks.d/validator_metrics.py"
         },
         {
@@ -77,7 +77,7 @@ data "cloudinit_config" "init" {
         # Voting Power
         {
           encoding = "b64"
-          content  = filebase64("${path.module}/voting_power.py")
+          content  = filebase64("${path.module}/custom_checks/voting_power.py")
           path     = "/custom-metrics/checks.d/voting_power.py"
         },
         {
