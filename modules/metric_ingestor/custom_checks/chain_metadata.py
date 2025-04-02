@@ -24,6 +24,10 @@ class ChainMetadataCheck(AgentCheck):
         response = requests.get(f"{base_api_url}{FETCH_PATH}")
         data = response.json()
 
+        self._save_monikers(data)
+        self._submit_metrics(data)
+
+    def _submit_metrics(self, data):
         # Calculate total power
         total_power = sum(
             Decimal(v["tokens"]) for v in data["validators"] if not v["jailed"]
@@ -37,29 +41,21 @@ class ChainMetadataCheck(AgentCheck):
 
         # Process validators
         validators = []
-        monikers = {}
         for ext_val in data["validators"]:
             if ext_val["jailed"]:
                 continue
 
             voting_power = Decimal(ext_val["tokens"]) / Decimal("1000000000000000000")
             percentage = (voting_power / total_power_normalized) * Decimal("100")
-            moniker = ext_val["description"]["moniker"].strip()
 
             validators.append(
                 {
                     "validator_address": ext_val["operator_address"],
-                    "moniker": moniker,
+                    "moniker": self._extract_moniker(ext_val),
                     "voting_power": voting_power,
                     "percentage": percentage,
                 }
             )
-
-            monikers[ext_val["operator_address"]] = moniker
-
-        # Dump monikers to file
-        with open(MONIKERS_FILE, "w") as f:
-            json.dump(monikers, f)
 
         # Sort validators by voting power (descending) and limit to active set only
         validators.sort(key=lambda x: x["voting_power"], reverse=True)
@@ -92,3 +88,16 @@ class ChainMetadataCheck(AgentCheck):
                 float(cumulative_sum),
                 tags=tags,
             )
+
+    def _save_monikers(self, data):
+        monikers = {}
+
+        for ext_val in data["validators"]:
+            monikers[ext_val["operator_address"]] = self._extract_moniker(ext_val)
+
+        with open(MONIKERS_FILE, "w") as f:
+            json.dump(monikers, f)
+
+    def _extract_moniker(self, validator_entry):
+        moniker = validator_entry["description"]["moniker"].strip()
+        return moniker
