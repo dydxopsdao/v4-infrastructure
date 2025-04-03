@@ -16,7 +16,7 @@ module "datadog_agent" {
           "metrics" : var.metrics,
           "tags" : ["validator_name:${validator.name}", "is_full_node:false"],
           "max_returned_metrics" : var.max_returned_metrics,
-          "min_collection_interval": 30,
+          "min_collection_interval": 60,
           "log_requests": true,
         }
       ]
