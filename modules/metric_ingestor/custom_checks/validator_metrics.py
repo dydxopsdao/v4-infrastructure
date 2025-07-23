@@ -5,7 +5,7 @@ import os
 import json
 
 from datadog_checks.base import OpenMetricsBaseCheckV2
-from prometheus_client.parser import text_string_to_metric_families
+from datadog_checks.base.checks.openmetrics.v2.transform import get_native_dynamic_transformer
 
 __version__ = "1.0.0"
 REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
@@ -22,10 +22,12 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
             )
 
     def rename_tendermint_metric(self, metric, sample_data, runtime_data):
-        # Rename and submit as cometbft_*
-        new_name = 'cometbft_' + metric.name[len('tendermint_'):]
-        for sample, tags, hostname in sample_data:
-            self.gauge(new_name, sample.value, tags=tags, hostname=hostname)
+        # Rename tendermint_* metrics to cometbft_*
+        metric.name = 'cometbft_' + metric.name[len('tendermint_'):]
+        
+        # Let the framework handle type conversion using dynamic transformer
+        transformer = get_native_dynamic_transformer(self, metric.name, {}, {})
+        transformer(metric, sample_data, runtime_data)
 
     def check(self, instance):
         monikers = self._get_monikers()
