@@ -14,6 +14,18 @@ MONIKERS_FILE = "/tmp/monikers.json"
 class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
     def __init__(self, name, init_config, instances):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
+        
+        # attach a custom transformer to all tendermint_* metrics for all endpoints
+        for scraper in self.scrapers.values():
+            scraper.metric_transformer.add_custom_transformer(
+                r'^tendermint_(.*)$', self.rename_tendermint_metric, pattern=True
+            )
+
+    def rename_tendermint_metric(self, metric, sample_data, runtime_data):
+        # Rename and submit as cometbft_*
+        new_name = 'cometbft_' + metric.name[len('tendermint_'):]
+        for sample, tags, hostname in sample_data:
+            self.gauge(new_name, sample.value, tags=tags, hostname=hostname)
 
     def check(self, instance):
         monikers = self._get_monikers()
