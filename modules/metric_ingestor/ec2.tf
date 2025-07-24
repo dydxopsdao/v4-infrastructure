@@ -57,9 +57,11 @@ data "cloudinit_config" "init" {
             }
             instances = [
               for validator in var.validators : {
+                # NOTE: The 'metrics' field is intentionally omitted to allow custom transformers
+                # in the Datadog OpenMetrics check to process and rename metrics.
+                # See: https://docs.datadoghq.com/developers/custom_checks/prometheus/
                 openmetrics_endpoint = validator.openmetrics_endpoint
                 namespace            = var.metrics_namespace
-                metrics              = var.metrics
                 max_returned_metrics = var.max_returned_metrics
                 address              = validator.address
                 machine_id           = validator.machine_id

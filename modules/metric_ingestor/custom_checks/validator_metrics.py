@@ -14,19 +14,25 @@ MONIKERS_FILE = "/tmp/monikers.json"
 class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
     def __init__(self, name, init_config, instances):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
-        
-        # attach a custom transformer to all tendermint_* metrics for all endpoints
+
+    def configure_scrapers(self):
+        super().configure_scrapers()
         for scraper in self.scrapers.values():
+            global_options = scraper.metric_transformer.global_options
             scraper.metric_transformer.add_custom_transformer(
-                r'^tendermint_(.*)$', self.rename_tendermint_metric, pattern=True
+                r'^tendermint_(.*)$',
+                # we need the global_options for the scraper to be available in the transformer
+                lambda metric, sample_data, runtime_data, global_options=global_options: self.rename_tendermint_metric(
+                    metric, sample_data, runtime_data, global_options
+                ),
+                pattern=True
             )
 
-    def rename_tendermint_metric(self, metric, sample_data, runtime_data):
+    def rename_tendermint_metric(self, metric, sample_data, runtime_data, global_options):
         # Rename tendermint_* metrics to cometbft_*
         metric.name = 'cometbft_' + metric.name[len('tendermint_'):]
-        
-        # Let the framework handle type conversion using dynamic transformer
-        transformer = get_native_dynamic_transformer(self, metric.name, {}, {})
+
+        transformer = get_native_dynamic_transformer(self, metric.name, {}, global_options)
         transformer(metric, sample_data, runtime_data)
 
     def check(self, instance):
