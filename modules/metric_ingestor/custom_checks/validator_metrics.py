@@ -20,18 +20,18 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         for scraper in self.scrapers.values():
             global_options = scraper.metric_transformer.global_options
             scraper.metric_transformer.add_custom_transformer(
-                r'^tendermint_(.*)$',
+                r".*",
                 # we need the global_options for the scraper to be available in the transformer
-                lambda metric, sample_data, runtime_data, global_options=global_options: self.rename_tendermint_metric(
+                lambda metric, sample_data, runtime_data, global_options=global_options: self.custom_metric_transformer(
                     metric, sample_data, runtime_data, global_options
                 ),
                 pattern=True
             )
 
-    def rename_tendermint_metric(self, metric, sample_data, runtime_data, global_options):
-        # Rename tendermint_* metrics to cometbft_*
-        metric.name = 'cometbft_' + metric.name[len('tendermint_'):]
-
+    def custom_metric_transformer(self, metric, sample_data, runtime_data, global_options):
+        if metric.name.startswith("tendermint_"):
+            metric.name = "cometbft_" + metric.name[len("tendermint_"):]
+        # Always submit the metric, using the native transformer
         transformer = get_native_dynamic_transformer(self, metric.name, {}, global_options)
         transformer(metric, sample_data, runtime_data)
 
