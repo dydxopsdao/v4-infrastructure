@@ -95,7 +95,7 @@ data "cloudinit_config" "init" {
             }
             instances = [
               {
-                base_api_url               = var.chain_metadata_node_base_url
+                base_api_url              = var.chain_metadata_node_base_url
                 addresses_sharing_metrics = [for v in var.validators : v.address]
               }
             ]
