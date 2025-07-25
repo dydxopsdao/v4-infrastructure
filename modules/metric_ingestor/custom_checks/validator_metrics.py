@@ -28,7 +28,12 @@ class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
         try:
             super().check(instance)
         except Exception as e:
-            self.log.error("Error checking instance: %s", e)
+            self.log.error(
+                "Error checking instance: %s | address: %s | machine_id: %s",
+                e,
+                instance.get("address"),
+                instance.get("machine_id"),
+            )
             is_reachable = 0
         else:
             is_reachable = 1
