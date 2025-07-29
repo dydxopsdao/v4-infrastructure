@@ -5,7 +5,7 @@ import os
 import json
 
 from datadog_checks.base import OpenMetricsBaseCheckV2
-from prometheus_client.parser import text_string_to_metric_families
+from datadog_checks.base.checks.openmetrics.v2.transform import get_native_dynamic_transformer
 
 __version__ = "1.0.0"
 REACHABILITY_METRIC_NAME = "dydxopsservices.validator_endpoint_reachability"
@@ -14,6 +14,26 @@ MONIKERS_FILE = "/tmp/monikers.json"
 class ValidatorMetricsCheck(OpenMetricsBaseCheckV2):
     def __init__(self, name, init_config, instances):
         super(ValidatorMetricsCheck, self).__init__(name, init_config, instances)
+
+    def configure_scrapers(self):
+        super().configure_scrapers()
+        for scraper in self.scrapers.values():
+            global_options = scraper.metric_transformer.global_options
+            scraper.metric_transformer.add_custom_transformer(
+                r".*",
+                # we need the global_options for the scraper to be available in the transformer
+                lambda metric, sample_data, runtime_data, global_options=global_options: self.custom_metric_transformer(
+                    metric, sample_data, runtime_data, global_options
+                ),
+                pattern=True
+            )
+
+    def custom_metric_transformer(self, metric, sample_data, runtime_data, global_options):
+        if metric.name.startswith("tendermint_"):
+            metric.name = "cometbft_" + metric.name[len("tendermint_"):]
+        # Always submit the metric, using the native transformer
+        transformer = get_native_dynamic_transformer(self, metric.name, {}, global_options)
+        transformer(metric, sample_data, runtime_data)
 
     def check(self, instance):
         monikers = self._get_monikers()

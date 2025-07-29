@@ -64,20 +64,6 @@ variable "validators" {
   description = "List of validators for which to collect metrics"
 }
 
-variable "metrics" {
-  type        = list(string)
-  description = <<-EOT
-    The list of metrics to track.
-    Cosmos Telemetry and go-metrics support some metrics out of the box:
-      https://docs.cosmos.network/master/core/telemetry.html
-      https://github.com/armon/go-metrics/blob/master/metrics.go#L242
-    Custom metrics for dYdX protocol are usually in the form of <module>.*
-  EOT
-  default = [
-    ".*"
-  ]
-}
-
 variable "max_returned_metrics" {
   type        = number
   description = "the number of metrics we allow `com.datadoghq.ad.instances` to return."
